@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>議題融入 AI 角色與功能</title>
+<style>
+  :root{
+    --cat1:#C0392B; --cat1-light:#FDEDEC;
+    --cat2:#1E8449; --cat2-light:#EAFAF1;
+    --cat3:#1F618D; --cat3-light:#EBF5FB;
+    --cat4:#8E44AD; --cat4-light:#F5EEF8;
+    --ink:#2C3E50; --muted:#6b7280; --bg:#fafafa;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif;
+    background:linear-gradient(180deg,#f7f9fb 0%, #eef1f5 100%); color:var(--ink);
+  }
+  header{
+    text-align:center; padding:48px 20px 28px;
+  }
+  header h1{
+    font-size:clamp(24px,4vw,36px); margin:0 0 8px; letter-spacing:1px;
+  }
+  header p{ color:var(--muted); margin:0; font-size:19px; }
+
+  .tabs{
+    display:flex; flex-wrap:wrap; justify-content:center; gap:10px;
+    padding:0 16px 28px; max-width:1000px; margin:0 auto;
+  }
+  .tab{
+    border:2px solid transparent; padding:10px 20px; border-radius:30px;
+    font-size:19px; font-weight:bold; cursor:pointer; background:#fff;
+    box-shadow:0 1px 4px rgba(0,0,0,.08); transition:.2s; color:var(--ink);
+  }
+  .tab:hover{ transform:translateY(-2px); }
+  .tab.active1{ background:var(--cat1); color:#fff; border-color:var(--cat1); }
+  .tab.active2{ background:var(--cat2); color:#fff; border-color:var(--cat2); }
+  .tab.active3{ background:var(--cat3); color:#fff; border-color:var(--cat3); }
+  .tab.active4{ background:var(--cat4); color:#fff; border-color:var(--cat4); }
+
+  main{ max-width:1000px; margin:0 auto; padding:0 16px 60px; }
+
+  .panel{ display:none; animation:fade .35s ease; }
+  .panel.show{ display:block; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+
+  .panel-head{
+    border-radius:16px; padding:22px 26px; margin-bottom:22px; color:#fff;
+  }
+  .panel-head h2{ margin:0 0 6px; font-size:24px; }
+  .panel-head .sub{ font-size:18px; opacity:.92; }
+
+  .ph1{ background:linear-gradient(120deg,var(--cat1),#922B21); }
+  .ph2{ background:linear-gradient(120deg,var(--cat2),#145A32); }
+  .ph3{ background:linear-gradient(120deg,var(--cat3),#154360); }
+  .ph4{ background:linear-gradient(120deg,var(--cat4),#5B2C6F); }
+
+  .cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px; }
+
+  .card{
+    background:#fff; border-radius:14px; padding:20px;
+    box-shadow:0 2px 10px rgba(0,0,0,.06); border-top:5px solid #ccc;
+    cursor:pointer; transition:.25s; position:relative;
+  }
+  .card:hover{ box-shadow:0 8px 22px rgba(0,0,0,.12); transform:translateY(-3px); }
+  .card .num{
+    display:inline-block; font-size:16px; font-weight:bold; color:#fff;
+    padding:3px 10px; border-radius:20px; margin-bottom:10px;
+  }
+  .card h3{ margin:0 0 10px; font-size:17px; line-height:1.4; }
+  .card .body{
+    font-size:18px; line-height:1.75; color:#444;
+    max-height:0; overflow:hidden; transition:max-height .35s ease;
+  }
+  .card.open .body{ max-height:400px; margin-top:8px; }
+  .card .hint{ font-size:16px; color:var(--muted); margin-top:10px; }
+  .card.open .hint{ display:none; }
+
+  .c1{ border-top-color:var(--cat1); } .c1 .num{ background:var(--cat1); }
+  .c2{ border-top-color:var(--cat2); } .c2 .num{ background:var(--cat2); }
+  .c3{ border-top-color:var(--cat3); } .c3 .num{ background:var(--cat3); }
+  .c4{ border-top-color:var(--cat4); } .c4 .num{ background:var(--cat4); }
+
+  footer{ text-align:center; padding:20px; color:var(--muted); font-size:16.5px; }
+
+  .topic-tags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+  .topic-tags span{
+    background:rgba(255,255,255,.18); padding:3px 10px; border-radius:20px; font-size:16.5px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>議題融入 AI 角色與功能</h1>
+  <p>四大議題類別 × 十二項 AI 實務應用實例</p>
+</header>
+
+<div class="tabs" id="tabs"></div>
+
+<main id="main"></main>
+
+<footer>點擊卡片可展開查看完整實例說明　|　Microsoft JhengHei 字體最佳化顯示</footer>
+
+<script>
+const DATA = [
+  {
+    id:1, key:'ph1 c1 tab.active1'.split(' '), num:'一', title:'社會與人文涵養類',
+    sub:'性別平等、人權、多元文化、家庭教育、生命教育、品德教育', color:'cat1',
+    examples:[
+      {t:'AI 性別平等情境對話模擬器', b:'教師於課堂中讓 AI 扮演不同性別角色，模擬職場、家庭或校園中常見的性別刻板印象情境，學生與 AI 進行角色扮演對話，練習同理表達與覺察偏見，課後 AI 並提供對話回饋與反思提問，融入性別平等與品德教育。'},
+      {t:'AI 人權新聞議題多元觀點分析', b:'學生輸入時事新聞或社會案例，AI 協助拆解事件中各方（受害者、加害者、旁觀者、政府）的立場與權益主張，產出「多元觀點對照表」，引導學生練習換位思考與人權判斷，培養媒體識讀與人權意識。'},
+      {t:'AI 多元文化品德兩難故事產生器', b:'依照不同族群、家庭背景與文化情境，AI 客製化生成具品德兩難情節的短篇故事（如新住民家庭、單親家庭、跨文化衝突），並自動產出討論引導問題，供班級導師於生命教育、家庭教育課程中進行小組討論。'},
+    ]
+  },
+  {
+    id:2, num:'二', title:'環境與永續發展類',
+    sub:'環境、海洋、能源、戶外教育、國際教育', color:'cat2',
+    examples:[
+      {t:'AI 海洋廢棄物影像辨識淨灘專題', b:'學生於海岸戶外教育淨灘活動中以手機拍攝撿拾物，上傳後由 AI 影像辨識模型自動分類海洋廢棄物類型（塑膠、漁網、保麗龍等），並即時產出統計圖表與來源推論，協助學生完成探究式環境教育專題報告。'},
+      {t:'AI 個人化能源消耗計算與情境模擬', b:'結合 Google Apps Script 與 AI，依學生輸入的家庭用電習慣自動試算碳排放量，並模擬「若改用再生能源／節能設備」的情境差異，搭配戶外能源設施踏查（如太陽能板、風力機）學習單，深化能源教育素養。'},
+      {t:'AI 國際永續政策跨國比較助手', b:'學生選定特定 SDGs 議題（如氣候變遷、海洋保育），AI 協助蒐集並摘要不同國家的政策與作法，自動產出跨國比較表與重點摘要，輔助學生進行國際教育專題探究與簡報製作。'},
+    ]
+  },
+  {
+    id:3, num:'三', title:'科學與生活知能類',
+    sub:'科技、資訊、閱讀素養、安全、防災、法治教育', color:'cat3',
+    examples:[
+      {t:'AI 資安詐騙情境演練機器人', b:'AI 模擬常見釣魚簡訊、假投資邀約、社群帳號詐騙等對話情境，讓學生在安全的模擬環境中練習辨識可疑訊息並做出正確應對，演練後提供個人化弱點分析與資安防詐知能提醒。'},
+      {t:'AI 閱讀素養分層提問產生器', b:'教師上傳課文或課外讀物，AI 自動依布魯姆認知層次（記憶、理解、應用、分析、評鑒、創造）產出分層提問與摘要重點，協助差異化教學與學生自我檢核閱讀理解程度。'},
+      {t:'AI 防災情境決策模擬與法治知識問答', b:'AI 建立地震、火災、颱風等防災情境的互動決策樹，學生依情境做出選擇並獲得即時回饋；同時結合相關法規（如建築安全法規、緊急應變條例）設計法治教育問答，強化安全防災與法治素養。'},
+    ]
+  },
+  {
+    id:4, num:'四', title:'個人化適性發展類',
+    sub:'生涯規劃、原住民族教育', color:'cat4',
+    examples:[
+      {t:'AI 生涯性向探索對話教練', b:'AI 透過多輪開放式提問了解學生的興趣、價值觀與優勢能力，運用心理測驗概念（如 Holland 興趣類型）進行分析，最終產出個人化生涯探索報告與適合科系／職涯方向建議，作為生涯規劃課程的輔助工具。'},
+      {t:'AI 原住民族文化與族語學習小幫手', b:'整合各族語詞彙資料庫與部落口傳故事，AI 依學生所屬族群或學習興趣生成個人化族語學習教材與互動測驗，並結合部落文化故事融入課程，提升原住民族教育的在地連結與學習動機。'},
+      {t:'AI 職業訪談模擬器', b:'AI 扮演不同職業角色（如護理師、工程師、設計師），讓學生練習職涯訪談的提問技巧與應對方式，訪談結束後 AI 提供溝通表現回饋，協助學生建立職涯探索的實務經驗與自信。'},
+    ]
+  },
+];
+
+const tabsEl = document.getElementById('tabs');
+const mainEl = document.getElementById('main');
+
+DATA.forEach((cat, idx) => {
+  const tab = document.createElement('div');
+  tab.className = 'tab' + (idx===0 ? ' active'+cat.id : '');
+  tab.textContent = cat.num + '、' + cat.title;
+  tab.dataset.target = 'panel'+cat.id;
+  tab.dataset.cat = cat.id;
+  tab.addEventListener('click', () => showPanel(cat.id));
+  tabsEl.appendChild(tab);
+
+  const panel = document.createElement('div');
+  panel.className = 'panel' + (idx===0 ? ' show' : '');
+  panel.id = 'panel'+cat.id;
+
+  const tagsHtml = cat.sub.split('、').map(s=>'<span>'+s+'</span>').join('');
+
+  panel.innerHTML = `
+    <div class="panel-head ph${cat.id}">
+      <h2>${cat.num}、${cat.title}</h2>
+      <div class="sub">涵蓋議題</div>
+      <div class="topic-tags">${tagsHtml}</div>
+    </div>
+    <div class="cards">
+      ${cat.examples.map((ex,i)=>`
+        <div class="card c${cat.id}" onclick="this.classList.toggle('open')">
+          <span class="num">實例 ${i+1}</span>
+          <h3>${ex.t}</h3>
+          <div class="body">${ex.b}</div>
+          <div class="hint">點擊展開說明 ▾</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  mainEl.appendChild(panel);
+});
+
+function showPanel(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('show'));
+  document.getElementById('panel'+id).classList.add('show');
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.classList.remove('active1','active2','active3','active4');
+    if(t.dataset.cat == id) t.classList.add('active'+id);
+  });
+}
+</script>
+</body>
+</html>

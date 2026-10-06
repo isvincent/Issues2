@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>議題教育 × AI 融入應用實例</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root{
+    --c1:#2E75B6; --c1l:#EAF2FB;
+    --c2:#2E8B57; --c2l:#EAF6EF;
+    --c3:#B8860B; --c3l:#FBF3E0;
+    --c4:#8B4789; --c4l:#F6EBF6;
+    --ink:#1f1f1f; --sub:#5b5b5b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif;
+    background:linear-gradient(180deg,#f4f7fb 0%, #ffffff 200px);
+    color:var(--ink);
+  }
+  header{
+    text-align:center; padding:48px 20px 28px;
+  }
+  header h1{
+    font-size:30px; margin:0 0 8px; color:#1F4E79; letter-spacing:1px;
+  }
+  header p{
+    margin:4px 0; color:var(--sub); font-size:19px;
+  }
+  header .en{ font-style:italic; font-size:17px; color:#888; }
+
+  nav{
+    display:flex; flex-wrap:wrap; justify-content:center; gap:10px;
+    padding:0 20px 30px; position:sticky; top:0; background:rgba(255,255,255,.92);
+    backdrop-filter:blur(6px); z-index:50; padding-top:14px; border-bottom:1px solid #eee;
+  }
+  nav button{
+    border:none; cursor:pointer; padding:10px 18px; border-radius:30px;
+    font-family:inherit; font-size:18px; font-weight:bold; color:#fff;
+    opacity:.55; transition:all .25s; box-shadow:0 2px 6px rgba(0,0,0,.08);
+  }
+  nav button.active{ opacity:1; transform:translateY(-2px); }
+  nav button[data-cat="1"]{ background:var(--c1); }
+  nav button[data-cat="2"]{ background:var(--c2); }
+  nav button[data-cat="3"]{ background:var(--c3); }
+  nav button[data-cat="4"]{ background:var(--c4); }
+
+  main{ max-width:960px; margin:0 auto; padding:10px 20px 80px; }
+
+  .category{ margin-bottom:50px; scroll-margin-top:90px; }
+  .cat-head{
+    display:flex; align-items:center; gap:14px; padding:18px 24px; border-radius:14px;
+    color:#fff; margin-bottom:18px; box-shadow:0 4px 14px rgba(0,0,0,.08);
+  }
+  .cat-head .num{
+    font-size:26px; font-weight:bold; background:rgba(255,255,255,.25);
+    width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .cat-head h2{ margin:0 0 4px; font-size:21px; }
+  .cat-head p{ margin:0; font-size:17px; opacity:.9; }
+
+  .cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+
+  .card{
+    background:#fff; border-radius:12px; padding:18px 20px; cursor:pointer;
+    border:1px solid #e6e6e6; box-shadow:0 2px 8px rgba(0,0,0,.05); transition:all .25s;
+    position:relative; overflow:hidden;
+  }
+  .card:hover{ transform:translateY(-4px); box-shadow:0 8px 20px rgba(0,0,0,.12); }
+  .card .idx{
+    position:absolute; top:0; right:0; width:38px; height:38px; color:#fff;
+    display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:16px;
+    border-bottom-left-radius:12px;
+  }
+  .card h3{ font-size:16px; margin:0 0 10px; padding-right:30px; line-height:1.4; }
+  .card .role, .card .app{
+    font-size:17px; line-height:1.7; color:#444; margin:0 0 6px;
+    max-height:0; opacity:0; overflow:hidden; transition:all .35s ease;
+  }
+  .card.open .role, .card.open .app{ max-height:300px; opacity:1; margin-bottom:8px; }
+  .card .label{ font-weight:bold; }
+  .card .hint{ font-size:16px; color:#999; margin-top:4px; }
+  .card.open .hint{ display:none; }
+
+  footer{ text-align:center; padding:30px; color:#999; font-size:16px; }
+
+  @media(max-width:600px){
+    header h1{ font-size:22px; }
+    nav button{ padding:8px 12px; font-size:16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>議題教育 × AI 融入應用實例</h1>
+  <p class="en">Issue-Based Education × AI Integration Examples</p>
+  <p>四大議題類別・各舉三項 AI 融入教學之實際應用實例　｜　點擊卡片展開內容</p>
+</header>
+
+<nav id="nav"></nav>
+
+<main id="main"></main>
+
+<footer>點擊任一張卡片可展開／收合詳細內容　・　共 4 大類別 × 3 項實例 = 12 項 AI 教學應用</footer>
+
+<script>
+const data = [
+  {
+    num:"一", title:"社會與人文涵養類",
+    subtitle:"性別平等・人權・多元文化・家庭教育・生命教育・品德教育",
+    color:"c1",
+    items:[
+      {title:"AI 性別平等情境對話模擬",
+       role:"扮演不同性別角色與學生進行角色扮演對話，即時提供多元觀點回饋與引導反思",
+       app:"教師設計性別刻板印象情境（如職場分工、家務分配），學生與 AI 聊天機器人對話演練，AI 於對話結束後分析學生用語並提出多元文化觀點，協助破除偏見。"},
+      {title:"AI 人權新聞議題多元立場分析",
+       role:"擔任議題分析助手，針對新聞事件自動拆解不同利害關係人之立場與論點",
+       app:"學生輸入一則人權相關新聞（如移工權益、難民議題），AI 產出政府、受害者、國際組織、輿論等多方觀點對照表，訓練批判思考與多元文化理解能力。"},
+      {title:"AI 生命教育情緒反思夥伴",
+       role:"扮演同理傾聽的對話夥伴，引導學生深度反思並融入品德兩難情境討論",
+       app:"學生撰寫生命教育電子日記，AI 以溫和提問方式回應（如「這件事讓你學到什麼？」），並適時帶入品德教育兩難案例（如誠實 vs. 義氣）供學生思辨。"},
+    ]
+  },
+  {
+    num:"二", title:"環境與永續發展類",
+    subtitle:"環境・海洋・能源・戶外教育・國際教育",
+    color:"c2",
+    items:[
+      {title:"AI 海洋廢棄物影像辨識專題",
+       role:"擔任影像分類助手，自動辨識並統計淨灘照片中之垃圾種類與數量",
+       app:"學生以 Teachable Machine 或類似工具訓練 AI 模型，將淨灘蒐集之照片上傳辨識分類，AI 協助產出垃圾種類統計圖表，融入 SDG 14 海洋永續報告。"},
+      {title:"AI 能源使用情境模擬計算機",
+       role:"擔任數據分析與情境模擬工具，依用電資料計算碳足跡並提供節能建議",
+       app:"學生輸入家庭月用電度數，AI 計算碳排放量並模擬「若改用節能家電」之情境對比，產出視覺化節能建議報告，連結能源教育與永續發展目標。"},
+      {title:"AI 國際教育跨文化對話模擬",
+       role:"扮演他國學生視角，與本國學生進行跨文化議題對話，並協助生成國際教育專題",
+       app:"學生與 AI 模擬「不同國家學生看氣候變遷」之跨文化筆友對話，了解多元觀點後，搭配 AI 協助彙整 SDGs 主題之國際教育專題報告。"},
+    ]
+  },
+  {
+    num:"三", title:"科學與生活知能類",
+    subtitle:"科技・資訊・閱讀素養・安全・防災・法治教育",
+    color:"c3",
+    items:[
+      {title:"AI 假訊息辨識與媒體識讀訓練",
+       role:"擔任資訊素養教練，分析訊息來源可信度、邏輯謬誤與查證方法",
+       app:"學生將網路新聞或社群貼文交由 AI 分析，AI 標註可疑論述、提供查核管道建議，並說明常見的邏輯謬誤類型，培養資訊判讀與媒體素養能力。"},
+      {title:"AI 防災情境模擬問答系統",
+       role:"擔任防災知識教練，以聊天機器人形式模擬災害情境並檢核應變流程",
+       app:"建立校園防災知識庫後，學生與 AI 進行「地震／火災情境模擬問答」，AI 依學生回答給予即時回饋並修正應變 SOP 認知，強化防災演練成效。"},
+      {title:"AI 閱讀素養分層提問教練",
+       role:"擔任閱讀理解教練，依文本自動生成記憶、理解、應用、分析等分層提問",
+       app:"學生上傳讀物或法治教育案例（如校園霸凌事件），AI 依布魯姆認知層次生成提問清單，引導學生由淺入深思辨議題，並融入法治教育之法律觀點分析。"},
+    ]
+  },
+  {
+    num:"四", title:"個人化適性發展類",
+    subtitle:"生涯規劃・原住民族教育",
+    color:"c4",
+    items:[
+      {title:"AI 生涯性向探索對話引導",
+       role:"擔任生涯諮詢夥伴，透過多輪對話探索學生興趣性向並生成個人化建議",
+       app:"學生與 AI 進行生涯探索對話（如「你最享受的學習經驗是什麼？」），AI 依回答歷程歸納興趣傾向，產出個人化生涯地圖與學群／科系建議清單。"},
+      {title:"AI 原住民族文化故事數位轉譯",
+       role:"擔任口述歷史整理助手，協助轉譯部落耆老故事並生成數位繪本",
+       app:"學生採訪部落耆老口述故事後，AI 協助將錄音逐字稿整理潤飾，並生成圖文並茂的數位故事繪本，達成原住民族文化傳承與數位素養的雙重目標。"},
+      {title:"AI 個人學習歷程檔案彙整助手",
+       role:"擔任檔案彙整顧問，統整學習歷程資料並生成符合升學備審格式之初稿",
+       app:"學生提供課程紀錄、作品成果與反思心得，AI 協助統整為結構化之學習歷程檔案初稿，並依生涯規劃方向提出可加強之學習軌跡建議。"},
+    ]
+  },
+];
+
+const nav = document.getElementById('nav');
+const main = document.getElementById('main');
+
+data.forEach((cat, ci) => {
+  const btn = document.createElement('button');
+  btn.dataset.cat = ci+1;
+  btn.textContent = cat.num + "、" + cat.title;
+  btn.onclick = () => document.getElementById('cat'+(ci+1)).scrollIntoView({behavior:'smooth', block:'start'});
+  nav.appendChild(btn);
+
+  const section = document.createElement('section');
+  section.className = 'category';
+  section.id = 'cat'+(ci+1);
+
+  const head = document.createElement('div');
+  head.className = 'cat-head';
+  head.style.background = `var(--${cat.color})`;
+  head.innerHTML = `<div class="num">${cat.num}</div><div><h2>${cat.title}</h2><p>${cat.subtitle}</p></div>`;
+  section.appendChild(head);
+
+  const cards = document.createElement('div');
+  cards.className = 'cards';
+
+  cat.items.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="idx" style="background:var(--${cat.color})">${i+1}</div>
+      <h3>${item.title}</h3>
+      <p class="role"><span class="label">AI 角色／功能：</span>${item.role}</p>
+      <p class="app"><span class="label">實際運用方式：</span>${item.app}</p>
+      <div class="hint">點擊展開詳細內容 ▾</div>
+    `;
+    card.style.background = `var(--${cat.color}l)`;
+    card.onclick = () => card.classList.toggle('open');
+    cards.appendChild(card);
+  });
+
+  section.appendChild(cards);
+  main.appendChild(section);
+});
+
+// scroll spy
+const sections = data.map((_, i) => document.getElementById('cat'+(i+1)));
+const navButtons = [...nav.children];
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      const idx = sections.indexOf(e.target);
+      navButtons.forEach(b => b.classList.remove('active'));
+      if(navButtons[idx]) navButtons[idx].classList.add('active');
+    }
+  });
+}, { rootMargin: "-40% 0px -50% 0px" });
+sections.forEach(s => observer.observe(s));
+navButtons[0].classList.add('active');
+</script>
+</body>
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 融入議題教育實例 - 首頁</title>
+    <style>
+        :root {
+            --c1: #FF6B6B;
+            --c2: #4ECDC4;
+            --c3: #45B7D1;
+            --c4: #FDCB6E;
+            --c5: #6C5CE7;
+            --c6: #FD79A8;
+            --c7: #00B894;
+        }
+        body {
+            margin: 0;
+            font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif;
+            background-color: #fdfbfb;
+            color: #2c3e50;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        /* 動態背景 */
+        .bg-anim {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+            overflow: hidden;
+        }
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: float 15s infinite alternate ease-in-out;
+        }
+        .shape:nth-child(1) { width: 400px; height: 400px; background: #FF6B6B; top: -10%; left: -10%; animation-delay: 0s; }
+        .shape:nth-child(2) { width: 500px; height: 500px; background: #4ECDC4; bottom: -20%; right: -10%; animation-delay: -5s; }
+        .shape:nth-child(3) { width: 350px; height: 350px; background: #FDCB6E; top: 40%; left: 40%; animation-delay: -10s; }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(100px, 50px) scale(1.1); }
+            100% { transform: translate(-50px, 100px) scale(0.9); }
+        }
+
+        header {
+            text-align: center;
+            padding: 80px 20px 40px;
+        }
+        h1 {
+            font-size: clamp(38px, 6vw, 60px);
+            margin: 0;
+            background: linear-gradient(45deg, #FF6B6B, #6C5CE7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.05);
+            font-weight: 900;
+        }
+        p.subtitle {
+            font-size: clamp(22px, 3.5vw, 28px);
+            color: #555;
+            margin-top: 15px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 20px 100px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 35px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            padding: 35px 25px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 2px solid transparent;
+        }
+        
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 8px;
+            transition: height 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-12px) scale(1.03);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+        .card:hover::before {
+            height: 12px;
+        }
+        
+        .card:active {
+            transform: translateY(-5px) scale(0.98);
+        }
+        
+        .card h2 {
+            font-size: 28px;
+            margin: 20px 0 10px;
+            font-weight: 900;
+        }
+        
+        .card p {
+            font-size: 20px;
+            color: #666;
+            line-height: 1.6;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .card-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+            transition: transform 0.4s ease;
+        }
+        .card:hover .card-icon {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        /* Individual Card Colors */
+        .card:nth-child(1) { border-color: rgba(255, 107, 107, 0.3); }
+        .card:nth-child(1)::before { background: var(--c1); }
+        .card:nth-child(1) h2 { color: var(--c1); }
+        
+        .card:nth-child(2) { border-color: rgba(78, 205, 196, 0.3); }
+        .card:nth-child(2)::before { background: var(--c2); }
+        .card:nth-child(2) h2 { color: var(--c2); }
+        
+        .card:nth-child(3) { border-color: rgba(69, 183, 209, 0.3); }
+        .card:nth-child(3)::before { background: var(--c3); }
+        .card:nth-child(3) h2 { color: var(--c3); }
+        
+        .card:nth-child(4) { border-color: rgba(253, 203, 110, 0.3); }
+        .card:nth-child(4)::before { background: var(--c4); }
+        .card:nth-child(4) h2 { color: var(--c4); }
+        
+        .card:nth-child(5) { border-color: rgba(108, 92, 231, 0.3); }
+        .card:nth-child(5)::before { background: var(--c5); }
+        .card:nth-child(5) h2 { color: var(--c5); }
+        
+        .card:nth-child(6) { border-color: rgba(253, 121, 168, 0.3); }
+        .card:nth-child(6)::before { background: var(--c6); }
+        .card:nth-child(6) h2 { color: var(--c6); }
+        
+        .card:nth-child(7) { border-color: rgba(0, 184, 148, 0.3); }
+        .card:nth-child(7)::before { background: var(--c7); }
+        .card:nth-child(7) h2 { color: var(--c7); }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            color: #888;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="bg-anim">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    
+    <header>
+        <h1>AI 融入議題教育實例</h1>
+        <p class="subtitle">點擊下方卡片探索各項教育實例，並體驗互動音效</p>
+    </header>
+
+    <div class="container">
+        <!-- 連結直接使用中文檔名，在現代瀏覽器與 GitHub Pages 均能正常解析 -->
+        <a href="AI融入議題教育實例1.html" class="card">
+            <div class="card-icon">🧠</div>
+            <h2>實例一</h2>
+            <p>探索第一部分的教學應用與情境模擬</p>
+        </a>
+        <a href="AI融入議題教育實例2.html" class="card">
+            <div class="card-icon">🌍</div>
+            <h2>實例二</h2>
+            <p>了解環境永續及更多跨領域教學案例</p>
+        </a>
+        <a href="AI融入議題教育實例3.html" class="card">
+            <div class="card-icon">🔬</div>
+            <h2>實例三</h2>
+            <p>科學、科技與生活知能的 AI 融入</p>
+        </a>
+        <a href="AI融入議題教育實例4.html" class="card">
+            <div class="card-icon">🎯</div>
+            <h2>實例四</h2>
+            <p>個人化適性發展與生涯規劃設計</p>
+        </a>
+        <a href="AI融入議題教育實例5.html" class="card">
+            <div class="card-icon">💡</div>
+            <h2>實例五</h2>
+            <p>創新思維與實作專題的教育實踐</p>
+        </a>
+        <a href="AI融入議題教育實例6.html" class="card">
+            <div class="card-icon">🤝</div>
+            <h2>實例六</h2>
+            <p>社會實踐與人際溝通互動實例</p>
+        </a>
+        <a href="AI融入議題教育實例7.html" class="card">
+            <div class="card-icon">🚀</div>
+            <h2>實例七</h2>
+            <p>前瞻視野與未來教育發展探索</p>
+        </a>
+    </div>
+
+    <footer>
+        &copy; AI 教育實例專區 - 專為清晰閱讀與互動體驗設計
+    </footer>
+
+    <script>
+        // 初始化 Web Audio API (音效合成，無需外部檔案即可在 GitHub Pages 上運作)
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // 播放 hover 音效 (輕柔的滴答聲)
+        function playHoverSound() {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.05);
+            
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 0.01);
+            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.05);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.05);
+        }
+
+        // 播放 click 音效 (清脆的彈出聲)
+        function playClickSound() {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.2, audioCtx.currentTime + 0.02);
+            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.15);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.15);
+        }
+
+        // 為所有卡片綁定事件
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                initAudio();
+                playHoverSound();
+            });
+            
+            card.addEventListener('click', (e) => {
+                initAudio();
+                playClickSound();
+                
+                // 延遲跳轉以確保音效能播完 (雖然換頁很快，稍微延遲能確保體驗)
+                e.preventDefault();
+                const target = card.getAttribute('href');
+                
+                // 加入一點點震動效果 (如果裝置支援)
+                if (navigator.vibrate) {
+                    navigator.vibrate(20);
+                }
+                
+                setTimeout(() => {
+                    window.location.href = target;
+                }, 150);
+            });
+        });
+
+        // 頁面點擊即可初始化 Audio Context (現代瀏覽器安全性要求)
+        document.body.addEventListener('click', initAudio, { once: true });
+        document.body.addEventListener('touchstart', initAudio, { once: true });
+    </script>
+</body>
+</html>

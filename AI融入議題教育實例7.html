@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 賦能議題教育 · 互動探索</title>
+<style>
+  :root{
+    --bg:#f4f5f8; --card:#ffffff; --ink:#1f2430; --muted:#6b7280;
+    --c1:#c0392b; --c1l:#fbeae8;
+    --c2:#1e8449; --c2l:#e6f4ea;
+    --c3:#1f6fb2; --c3l:#e6f0f9;
+    --c4:#7d3c98; --c4l:#f0e6f5;
+    --shadow:0 6px 24px rgba(20,24,40,.08);
+    --radius:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Microsoft JhengHei","微軟正黑體","PingFang TC","Noto Sans TC",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+  /* hero */
+  header.hero{
+    background:linear-gradient(135deg,#1a1a2e 0%,#2d2d54 55%,#3a3a6a 100%);
+    color:#fff;padding:64px 0 52px;position:relative;overflow:hidden;
+  }
+  header.hero::after{
+    content:"";position:absolute;right:-80px;top:-80px;width:340px;height:340px;
+    background:radial-gradient(circle,rgba(255,255,255,.10),transparent 70%);border-radius:50%;
+  }
+  .hero h1{font-size:clamp(28px,5vw,46px);font-weight:800;letter-spacing:1px}
+  .hero .sub{font-size:clamp(15px,2.4vw,20px);opacity:.92;margin-top:10px}
+  .hero .en{font-size:17px;opacity:.6;font-style:italic;margin-top:6px;letter-spacing:.5px}
+  .hero .intro{max-width:760px;margin-top:22px;font-size:19px;opacity:.88;line-height:1.85}
+  .stats{display:flex;gap:14px;flex-wrap:wrap;margin-top:26px}
+  .stat{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.16);
+    border-radius:14px;padding:12px 18px;backdrop-filter:blur(6px)}
+  .stat b{font-size:24px;display:block;font-weight:800}
+  .stat span{font-size:16px;opacity:.8}
+
+  /* controls */
+  .controls{position:sticky;top:0;z-index:40;background:rgba(244,245,248,.92);
+    backdrop-filter:blur(10px);border-bottom:1px solid #e4e6ec;padding:14px 0}
+  .controls .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .search{flex:1;min-width:200px;display:flex;align-items:center;gap:8px;
+    background:#fff;border:1px solid #dfe2ea;border-radius:12px;padding:10px 14px}
+  .search input{border:0;outline:0;font:inherit;width:100%;background:transparent;color:var(--ink)}
+  .search svg{flex:none;opacity:.5}
+  .filters{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{border:1px solid #d6d9e2;background:#fff;color:var(--muted);
+    border-radius:999px;padding:8px 16px;font-size:18px;font-weight:600;cursor:pointer;
+    transition:.18s;white-space:nowrap}
+  .chip:hover{transform:translateY(-1px)}
+  .chip.active{color:#fff;border-color:transparent}
+  .chip[data-c="all"].active{background:#1a1a2e}
+  .chip[data-c="0"].active{background:var(--c1)}
+  .chip[data-c="1"].active{background:var(--c2)}
+  .chip[data-c="2"].active{background:var(--c3)}
+  .chip[data-c="3"].active{background:var(--c4)}
+
+  /* sections */
+  main{padding:36px 0 60px}
+  .cat{margin-bottom:42px}
+  .cat-head{display:flex;align-items:center;gap:14px;margin-bottom:20px;
+    padding:16px 22px;border-radius:var(--radius);color:#fff;box-shadow:var(--shadow)}
+  .cat-head .icon{font-size:30px}
+  .cat-head h2{font-size:clamp(20px,3vw,26px);font-weight:800}
+  .cat-head .cen{font-size:16px;opacity:.85;font-style:italic}
+  .cat-head .count{margin-left:auto;background:rgba(255,255,255,.2);
+    border-radius:999px;padding:5px 14px;font-size:17px;font-weight:700}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:18px}
+
+  .topic{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+    overflow:hidden;border:1px solid #edeef3;transition:.2s;display:flex;flex-direction:column}
+  .topic:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(20,24,40,.13)}
+  .topic .t-head{padding:18px 20px 14px;cursor:pointer;position:relative}
+  .topic .t-head::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px}
+  .topic .t-name{font-size:19px;font-weight:800;display:flex;align-items:center;gap:8px}
+  .topic .t-role{font-size:17.5px;color:var(--muted);margin-top:8px;line-height:1.6}
+  .topic .t-role b{color:var(--ink);font-weight:700}
+  .toggle{position:absolute;right:18px;top:18px;width:26px;height:26px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;
+    color:#fff;transition:.25s}
+  .topic.open .toggle{transform:rotate(45deg)}
+
+  .examples{max-height:0;overflow:hidden;transition:max-height .4s ease;padding:0 20px}
+  .topic.open .examples{max-height:760px;padding-bottom:18px}
+  .ex{display:flex;gap:12px;padding:12px 0;border-top:1px dashed #e6e8ef;align-items:flex-start}
+  .ex:first-child{border-top:1px solid #eef0f5;margin-top:4px}
+  .ex .num{flex:none;width:34px;height:34px;border-radius:10px;color:#fff;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-weight:800;line-height:1}
+  .ex .num small{font-size:12px;font-weight:600;opacity:.9}
+  .ex .num span{font-size:19px}
+  .ex p{font-size:18.5px;color:#33384a}
+  .ex p strong{font-weight:800}
+
+  .empty{text-align:center;padding:60px 20px;color:var(--muted)}
+  .empty b{display:block;font-size:18px;margin-bottom:6px;color:var(--ink)}
+
+  footer{text-align:center;padding:30px 20px 50px;color:var(--muted);font-size:17px}
+  mark{background:#ffe680;color:inherit;border-radius:3px;padding:0 2px}
+
+  @media(max-width:560px){
+    .grid{grid-template-columns:1fr}
+    .hero{padding:46px 0 38px}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>AI 賦能議題教育</h1>
+    <div class="sub">四大議題類別 × 人工智慧的角色與實際應用</div>
+    <div class="en">Integrating Artificial Intelligence into Cross-Curricular Educational Issues</div>
+    <p class="intro">依《十二年國教》議題融入精神，將議題分為四大類，逐一說明 AI 在各議題中可扮演的角色與功能，並為每個議題列舉三個實際可運用的實例。點擊卡片可展開，或使用上方篩選與搜尋探索。</p>
+    <div class="stats">
+      <div class="stat"><b>4</b><span>議題類別</span></div>
+      <div class="stat"><b>19</b><span>融入議題</span></div>
+      <div class="stat"><b>57</b><span>AI 實例</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="wrap row">
+    <label class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="q" type="text" placeholder="搜尋議題或實例關鍵字，例如：辨識、辯論、節能…">
+    </label>
+    <div class="filters" id="filters">
+      <button class="chip active" data-c="all">全部</button>
+      <button class="chip" data-c="0">社會與人文涵養</button>
+      <button class="chip" data-c="1">環境與永續發展</button>
+      <button class="chip" data-c="2">科學與生活知能</button>
+      <button class="chip" data-c="3">個人化適性發展</button>
+    </div>
+  </div>
+</div>
+
+<main class="wrap" id="app"></main>
+
+<footer>
+  AI 賦能議題教育 · 互動探索網頁　|　內容依十二年國教議題融入精神編製，AI 應用實例供教學設計與課程規劃參考。
+</footer>
+
+<script>
+const DATA = [
+  {cat:"社會與人文涵養類",catEn:"Social & Humanities",color:"var(--c1)",light:"var(--c1l)",icon:"🤝",topics:[
+    {name:"性別平等",role:"偏見偵測者・平權教材生成者・匿名諮詢輔助者",examples:[
+      "教材偏見檢測：以 AI 分析教科書與講義中的性別刻板印象（職業性別分配、用語暗示），自動標示並產出中性化改寫建議。",
+      "情境劇本模擬：用生成式 AI 製作多元性別情境對話（校園性騷擾應對、職場差別待遇），讓學生反覆練習合宜回應。",
+      "匿名諮詢機器人：建置校園性平 AI 助理，學生可匿名詢問性別議題與求助管道，降低開口求助的心理門檻。"]},
+    {name:"人權",role:"案例分析者・多視角思辨引導者・歧視框架辨識者",examples:[
+      "人權案例問答庫：AI 彙整各國人權事件（轉型正義、難民、勞權），學生以問答方式探索事件脈絡與爭點。",
+      "多立場辯論模擬：AI 分別扮演政府、受害者、國際組織等角色與學生辯論，訓練同一議題的多元觀點。",
+      "歧視語言偵測：AI 協助分析新聞報導中針對特定族群的歧視性框架與隱含偏見，培養媒體識讀力。"]},
+    {name:"多元文化",role:"跨語言溝通橋樑・文化教材生成者・沉浸導覽者",examples:[
+      "即時翻譯與註解：AI 翻譯新住民語言並補充文化背景，協助多語班級即時溝通與相互理解。",
+      "文化故事生成：AI 結合各族群節慶、飲食、習俗生成繪本與短文，快速製作多元文化主題教材。",
+      "虛擬文化導覽：AI 生成各國與各族文化的影像、語音沉浸式導覽，帶領學生「走進」不同文化現場。"]},
+    {name:"家庭教育",role:"親子溝通顧問・家庭活動規劃師・生活管理助理",examples:[
+      "親子溝通腳本：AI 依情境（青少年情緒、3C 使用約定）提供具同理心的對話建議與開場句。",
+      "家庭活動規劃：AI 依成員年齡與興趣，生成可行的週末共同活動與親子互動方案。",
+      "家事與預算管理：AI 協助家庭建立分工輪值表與每月預算規劃，培養共同責任感。"]},
+    {name:"生命教育",role:"哲學思辨夥伴・情緒覺察助手・生命敘事整理者",examples:[
+      "生命議題對話：AI 以蘇格拉底式提問引導學生探討生死、意義與價值等深層課題。",
+      "情緒覺察日記：AI 分析學生情緒日記的變化趨勢，協助自我覺察（輔助而非取代專業協助）。",
+      "生命故事敘事：AI 協助學生整理長者口述歷史與生命回顧，完成跨世代的生命書寫。"]},
+    {name:"品德教育",role:"道德兩難設計者・反思回饋者・同理心訓練官",examples:[
+      "道德兩難模擬：AI 生成貼近生活的道德困境，引導學生分析抉擇背後的價值衝突。",
+      "善行紀錄反思：AI 協助學生記錄日常善行與反思日記，可視化品格成長軌跡。",
+      "同理心對話：AI 模擬不同處境角色（弱勢、被誤解者），讓學生練習換位思考。"]}
+  ]},
+  {cat:"環境與永續發展類",catEn:"Environment & Sustainability",color:"var(--c2)",light:"var(--c2l)",icon:"🌱",topics:[
+    {name:"環境",role:"碳足跡分析師・物種辨識者・變遷視覺化師",examples:[
+      "校園碳足跡：AI 分析用電、用水與通勤數據，找出耗能熱點並提出可執行的減碳建議。",
+      "物種辨識地圖：以 AI 影像辨識校園植物與昆蟲，協助學生建置在地生態地圖。",
+      "氣候變遷模擬：AI 視覺化海平面上升、熱島效應等情境，讓抽象數據變得可感知。"]},
+    {name:"海洋",role:"淨灘垃圾辨識者・海洋生態解說員・珊瑚監測模擬師",examples:[
+      "海廢辨識統計：AI 影像辨識淨灘垃圾種類並自動統計分類，產出污染來源分析報告。",
+      "海洋生態問答：以 AI 海洋生物資料庫進行互動學習，認識食物鏈與生物多樣性。",
+      "珊瑚白化預測：AI 分析海溫資料模擬珊瑚健康變化，理解暖化對生態的衝擊。"]},
+    {name:"能源",role:"用電分析師・再生能源評估師・節能行為教練",examples:[
+      "用電熱點分析：AI 解讀智慧電表數據，找出家庭或校園的能源浪費熱點。",
+      "再生能源評估：AI 依地理位置試算太陽能與風能的發電潛力與回收年限。",
+      "個人化節能方案：AI 依生活習慣產出量身打造的節能行動清單與成效追蹤。"]},
+    {name:"戶外教育",role:"行程風險評估師・即時導覽員・自然觀察記錄者",examples:[
+      "行程與風險規劃：AI 依天氣、體能與路況規劃路線，並即時提醒潛在風險與裝備。",
+      "定位導覽解說：AI 結合地理定位，提供所在地點的生態與人文歷史解說。",
+      "自然觀察記錄：AI 協助即時辨識並記錄沿途動植物，完成數位自然筆記。"]},
+    {name:"國際教育",role:"跨國語言助手・全球議題策展人・虛擬參訪導覽",examples:[
+      "跨國交流輔助：AI 即時翻譯與字幕，協助國際視訊交流順暢進行。",
+      "全球議題探究：AI 整理 SDGs 與國際時事，提供結構化的探究問題與資料。",
+      "虛擬國際參訪：AI 生成各國城市與文化的沉浸式導覽，拓展學生的世界視野。"]}
+  ]},
+  {cat:"科學與生活知能類",catEn:"Science & Life Skills",color:"var(--c3)",light:"var(--c3l)",icon:"🔬",topics:[
+    {name:"科技",role:"程式學習導師・創客專題助手・AI 素養教練",examples:[
+      "程式學習導師：AI 即時除錯並以白話解說錯誤原因，讓學生在做中學程式概念。",
+      "創客專題助手：AI 協助發想、設計與優化 Maker 專題（自走車、IoT 感測器）。",
+      "AI 素養教學：以 AI 工具本身為教材，帶學生理解其運作原理、限制與倫理。"]},
+    {name:"資訊",role:"假訊息查核員・資料視覺化師・隱私風險教官",examples:[
+      "假訊息查證：AI 協助交叉比對訊息來源與時間軸，辨識內容真偽與操作手法。",
+      "資料視覺化：AI 將原始數據轉成圖表，協助學生發現趨勢與異常。",
+      "隱私風險模擬：AI 模擬個資外洩與數位足跡情境，建立資安防護意識。"]},
+    {name:"閱讀素養",role:"個人化選書師・分層提問者・摘要心智圖手",examples:[
+      "個人化選書：AI 依閱讀程度與興趣推薦讀物，提升閱讀動機與廣度。",
+      "分層理解提問：AI 生成檢索、推論、評鑑等不同層次的提問，深化文本理解。",
+      "摘要與心智圖：AI 協助將長文整理成重點摘要與結構化心智圖。"]},
+    {name:"安全",role:"情境演練設計者・網路安全教官・成分查詢助手",examples:[
+      "校園安全演練：AI 生成緊急應變情境（火災、陌生人入侵），進行互動式演練。",
+      "網路安全教育：AI 模擬詐騙與網路霸凌情境，教學生如何辨識與求助。",
+      "用藥食安查詢：AI 查詢藥品與食品成分，提供安全使用與保存建議。"]},
+    {name:"防災",role:"災害情境模擬師・避難路線規劃師・防災測驗官",examples:[
+      "災害情境模擬：AI 視覺化地震、颱風、淹水的應變流程，強化臨場反應。",
+      "避難路線規劃：AI 依所在位置與災害類型，即時規劃最適疏散路線。",
+      "防災知識問答：AI 以互動測驗與情境題強化防災知識的長期記憶。"]},
+    {name:"法治教育",role:"生活法律諮詢・模擬法庭主持・條文白話化",examples:[
+      "生活法律諮詢：AI 解釋消費糾紛、校園規範等貼近生活的法律問題。",
+      "模擬法庭演練：AI 扮演法官、檢辯角色，協助學生進行審判流程演練。",
+      "法條白話化：AI 將艱澀法條轉成易懂說明與生活案例，降低理解門檻。"]}
+  ]},
+  {cat:"個人化適性發展類",catEn:"Personalized Development",color:"var(--c4)",light:"var(--c4l)",icon:"🧭",topics:[
+    {name:"生涯規劃",role:"性向分析師・職涯探索嚮導・履歷面試教練",examples:[
+      "興趣性向分析：AI 結合測評與對話分析個人特質，提供適配的職業傾向參考。",
+      "職涯路徑探索：AI 介紹各職業的工作內容、所需技能與未來發展趨勢。",
+      "履歷面試演練：AI 協助撰寫與修潤履歷，並模擬面試提問與即時回饋。"]},
+    {name:"原住民族教育",role:"族語學習夥伴・文化傳承策展人・傳統智慧數位化",examples:[
+      "族語學習保存：AI 提供族語發音、對話練習與語料庫保存，搶救瀕危語言。",
+      "文化知識傳承：AI 整理部落歷史、祭儀與口傳神話，建置數位文化資料庫。",
+      "傳統智慧數位化：AI 協助記錄編織、狩獵與生態知識等傳統技藝，永續傳承。"]}
+  ]}
+];
+
+const app = document.getElementById("app");
+let activeCat = "all";
+let query = "";
+
+function esc(s){return s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function hl(s){
+  if(!query) return esc(s);
+  const re = new RegExp("("+query.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi");
+  return esc(s).replace(re,"<mark>$1</mark>");
+}
+
+function render(){
+  app.innerHTML = "";
+  let totalShown = 0;
+
+  DATA.forEach((cat,ci)=>{
+    if(activeCat!=="all" && String(ci)!==activeCat) return;
+
+    const topics = cat.topics.filter(t=>{
+      if(!query) return true;
+      const blob = (t.name+t.role+t.examples.join("")).toLowerCase();
+      return blob.includes(query.toLowerCase());
+    });
+    if(topics.length===0) return;
+    totalShown += topics.length;
+
+    const sec = document.createElement("section");
+    sec.className = "cat";
+    sec.innerHTML = `
+      <div class="cat-head" style="background:${cat.color}">
+        <span class="icon">${cat.icon}</span>
+        <div>
+          <h2>${cat.cat}</h2>
+          <div class="cen">${cat.catEn}</div>
+        </div>
+        <span class="count">${topics.length} 議題</span>
+      </div>
+      <div class="grid"></div>`;
+    const grid = sec.querySelector(".grid");
+
+    topics.forEach(t=>{
+      const card = document.createElement("div");
+      card.className = "topic";
+      const exHTML = t.examples.map((ex,i)=>`
+        <div class="ex">
+          <div class="num" style="background:${cat.color}"><small>實例</small><span>${i+1}</span></div>
+          <p>${hl(ex)}</p>
+        </div>`).join("");
+      card.innerHTML = `
+        <div class="t-head">
+          <span class="toggle" style="background:${cat.color}">+</span>
+          <div class="t-name" style="border-color:${cat.color}">${hl(t.name)}</div>
+          <div class="t-role"><b>AI 角色：</b>${hl(t.role)}</div>
+        </div>
+        <div class="examples">${exHTML}</div>`;
+      card.querySelector(".t-head").style.borderLeft="6px solid "+cat.color;
+      card.querySelector(".t-head").addEventListener("click",()=>card.classList.toggle("open"));
+      // auto-open when searching
+      if(query) card.classList.add("open");
+      grid.appendChild(card);
+    });
+    app.appendChild(sec);
+  });
+
+  if(totalShown===0){
+    app.innerHTML = `<div class="empty"><b>找不到符合的議題或實例</b>試試其他關鍵字，或點選「全部」。</div>`;
+  }
+}
+
+document.getElementById("filters").addEventListener("click",e=>{
+  const b = e.target.closest(".chip"); if(!b) return;
+  document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+  b.classList.add("active");
+  activeCat = b.dataset.c;
+  render();
+});
+document.getElementById("q").addEventListener("input",e=>{
+  query = e.target.value.trim();
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

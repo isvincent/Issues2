@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI 融入四類議題教育教學實例</title>
+<style>
+:root {
+  --navy:#1E3A5F; --blue:#2F80ED; --teal:#0F766E; --amber:#B7791F; --purple:#6B46C1;
+  --bg:#f5f7fb; --card:#ffffff; --text:#243241; --muted:#667085; --line:#d0d5dd;
+  --shadow: 0 18px 45px rgba(30,58,95,.12); --radius:22px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Microsoft JhengHei","微軟正黑體",Arial,sans-serif;background:linear-gradient(135deg,#eef5ff 0%,#f9fafb 45%,#f4f0ff 100%);color:var(--text);line-height:1.65}
+.hero{position:relative;overflow:hidden;padding:56px 28px 36px;background:radial-gradient(circle at 12% 20%,rgba(47,128,237,.22),transparent 28%),radial-gradient(circle at 86% 6%,rgba(107,70,193,.18),transparent 32%),linear-gradient(135deg,#10233d,#1e3a5f);color:white}
+.hero::after{content:"";position:absolute;right:-120px;bottom:-120px;width:340px;height:340px;border-radius:50%;background:rgba(255,255,255,.08)}
+.container{max-width:1160px;margin:0 auto;position:relative;z-index:1}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;padding:7px 12px;border:1px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(255,255,255,.12);font-size:18px}
+h1{font-size:clamp(32px,5vw,58px);line-height:1.15;margin:18px 0 12px;letter-spacing:.02em}
+.lead{font-size:18px;max-width:880px;color:#e7efff;margin:0}
+.hero-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:28px}
+.stat{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:18px;padding:16px;backdrop-filter:blur(8px)}
+.stat b{display:block;font-size:28px;line-height:1.1}
+.stat span{font-size:17px;color:#dbe8ff}
+.toolbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.86);backdrop-filter:blur(14px);border-bottom:1px solid rgba(208,213,221,.75)}
+.toolbar-inner{max-width:1160px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 22px;flex-wrap:wrap}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 13px;font-family:inherit;font-weight:700;color:var(--text);cursor:pointer}
+.tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.search{display:flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 12px;min-width:min(360px,100%)}
+.search input{border:0;outline:0;font-family:inherit;font-size:19px;width:260px;max-width:100%;background:transparent}
+main{max-width:1160px;margin:0 auto;padding:30px 22px 70px}
+.section-title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:22px 0 14px}
+h2{font-size:30px;margin:0;color:var(--navy)}
+.sub{color:var(--muted);margin:4px 0 0}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.info-card,.role-card,.example-card{background:var(--card);border:1px solid rgba(208,213,221,.9);border-radius:var(--radius);box-shadow:var(--shadow)}
+.info-card{padding:20px}
+.info-card h3,.role-card h3{margin:0 0 8px;font-size:18px;color:var(--navy)}
+.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.role-card{padding:18px;border-top:5px solid var(--blue)}
+.principle-list{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.principle{background:#fff;border:1px solid #dbeafe;border-radius:18px;padding:16px}
+.principle strong{display:block;color:var(--navy);margin-bottom:4px}
+.category{display:none;margin-top:26px}
+.category.active{display:block}
+.cat-head{border-radius:28px;padding:24px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}
+.cat-head h2{color:inherit}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.badge{border-radius:999px;padding:6px 10px;font-size:17px;font-weight:700;background:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.9)}
+.role-pill{display:inline-block;margin:4px 4px 0 0;padding:5px 9px;border-radius:999px;background:#fff;font-size:17px;border:1px solid var(--line)}
+.example-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px}
+.example-card{overflow:hidden;transition:.18s ease;display:flex;flex-direction:column}
+.example-card:hover{transform:translateY(-3px);box-shadow:0 22px 52px rgba(30,58,95,.18)}
+.card-top{padding:18px 18px 12px;border-bottom:1px solid var(--line)}
+.card-top .num{font-weight:800;font-size:16px;letter-spacing:.08em;color:var(--muted)}
+.card-top h3{margin:5px 0 10px;font-size:19px;line-height:1.35}
+.card-body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:12px;flex:1}
+.meta{background:#f8fafc;border:1px solid #e4e7ec;border-radius:14px;padding:12px}
+.meta b{display:block;margin-bottom:2px;color:var(--navy)}
+details{border:1px solid #e4e7ec;border-radius:14px;background:#fff}
+summary{cursor:pointer;padding:11px 12px;font-weight:800;list-style:none}
+summary::after{content:"＋";float:right}
+details[open] summary::after{content:"－"}
+details ol, details p{margin:0;padding:0 14px 14px 32px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.btn{border:0;border-radius:999px;background:var(--navy);color:#fff;font-family:inherit;font-weight:800;padding:10px 14px;cursor:pointer}
+.btn.secondary{background:#fff;color:var(--navy);border:1px solid var(--line)}
+.checklist{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+.check-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px}
+.check-card h3{margin:0 0 10px;color:var(--navy)}
+.check{display:flex;gap:8px;align-items:flex-start;margin:9px 0}
+.check input{margin-top:6px}
+.rubric{width:100%;border-collapse:separate;border-spacing:0;margin-top:18px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line)}
+.rubric th,.rubric td{padding:13px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.rubric th{background:var(--navy);color:#fff}
+.rubric tr:last-child td{border-bottom:0}
+.empty{display:none;margin:30px 0;padding:22px;border:1px dashed var(--line);border-radius:18px;background:#fff;color:var(--muted)}
+footer{background:#10233d;color:#dbe8ff;padding:28px 22px;text-align:center}
+@media(max-width:960px){.hero-grid,.cards,.role-grid,.example-grid,.checklist,.principle-list{grid-template-columns:1fr 1fr}.cat-head{grid-template-columns:1fr}}
+@media(max-width:640px){.hero{padding:42px 20px 26px}.hero-grid,.cards,.role-grid,.example-grid,.checklist,.principle-list{grid-template-columns:1fr}.toolbar-inner{align-items:stretch}.search{width:100%}.search input{width:100%}}
+@media print{.toolbar,.actions{display:none}body{background:#fff}.category{display:block;page-break-before:always}.example-grid,.role-grid,.checklist{grid-template-columns:1fr}.example-card,.cat-head,.rubric{box-shadow:none}}
+</style>
+</head>
+<body>
+<header class="hero" id="top">
+  <div class="container">
+    <div class="eyebrow">AI × 議題教育 × 可實作教學設計</div>
+    <h1>AI 融入四類議題教育<br/>教學實例手冊</h1>
+    <p class="lead">將 AI 作為資料整理、診斷分析、情境模擬、創作生成、回饋修訂與行動追蹤的學習夥伴，協助學生在真實議題中培養理解、判斷與行動力。</p>
+    <div class="hero-grid">
+      <div class="stat"><b>4</b><span>類議題分類</span></div>
+      <div class="stat"><b>12</b><span>個實際可運用實例</span></div>
+      <div class="stat"><b>6</b><span>種 AI 教學角色</span></div>
+      <div class="stat"><b>1</b><span>套導入檢核與評量架構</span></div>
+    </div>
+  </div>
+</header>
+<nav class="toolbar">
+  <div class="toolbar-inner">
+    <div class="tabs" id="tabs"></div>
+    <label class="search">搜尋 <input id="search" type="search" placeholder="輸入議題、AI角色或成果..." /></label>
+  </div>
+</nav>
+<main>
+  <section>
+    <div class="section-title"><div><h2>AI 在議題教育中的角色地圖</h2><p class="sub">教師可依課程目標選擇合適角色，避免把 AI 變成單純代答工具。</p></div></div>
+    <div class="role-grid" id="roleGrid"></div>
+  </section>
+  <section style="margin-top:28px">
+    <div class="section-title"><div><h2>導入原則</h2><p class="sub">每個活動都應兼顧人主導、查證、隱私、脈絡與行動。</p></div></div>
+    <div class="principle-list" id="principles"></div>
+  </section>
+  <section id="categoryContainer"></section>
+  <div class="empty" id="empty">找不到符合搜尋條件的實例，請嘗試使用較短的關鍵字。</div>
+  <section id="check" style="margin-top:36px">
+    <div class="section-title"><div><h2>教師導入檢核與評量建議</h2><p class="sub">勾選項目會儲存在本頁瀏覽狀態中，方便教學設計時逐步檢核。</p></div><div class="actions"><button class="btn secondary" onclick="window.print()">列印本頁</button><button class="btn" onclick="resetChecks()">清除勾選</button></div></div>
+    <div class="checklist">
+      <div class="check-card"><h3>課前設計</h3><label class="check"><input type="checkbox">活動有真實問題，不只是問 AI 找答案。</label><label class="check"><input type="checkbox">提供可信資料來源或要求學生查證。</label><label class="check"><input type="checkbox">不輸入學生敏感個資。</label><label class="check"><input type="checkbox">提示詞包含角色、任務、限制與格式。</label></div>
+      <div class="check-card"><h3>課中引導</h3><label class="check"><input type="checkbox">AI 負責整理與建議，學生負責判斷與修正。</label><label class="check"><input type="checkbox">要求學生標示 AI 回答中可疑或需補證據之處。</label><label class="check"><input type="checkbox">小組比較不同提示詞的結果差異。</label><label class="check"><input type="checkbox">議題討論強調尊重、脈絡與界線。</label></div>
+      <div class="check-card"><h3>課後評量</h3><label class="check"><input type="checkbox">成果能展示知識理解與資料判讀。</label><label class="check"><input type="checkbox">學生能說明如何使用並修正 AI 回答。</label><label class="check"><input type="checkbox">行動方案具體、可執行、可追蹤。</label><label class="check"><input type="checkbox">包含個人或小組反思。</label></div>
+    </div>
+    <table class="rubric">
+      <thead><tr><th>評量面向</th><th>觀察重點</th><th>可蒐集證據</th></tr></thead>
+      <tbody>
+        <tr><td>知識理解</td><td>能說明議題核心概念並連結生活情境。</td><td>口頭分享、學習單、概念圖</td></tr>
+        <tr><td>資料判讀</td><td>能引用可信資料，區分事實、意見與推論。</td><td>查核表、資料來源清單、分析報告</td></tr>
+        <tr><td>AI 協作</td><td>能設計提示詞，並對 AI 回答查證與修正。</td><td>提示詞紀錄、修訂前後稿、反思紀錄</td></tr>
+        <tr><td>行動實踐</td><td>能提出具體、可行、可追蹤的改善方案。</td><td>行動計畫、成果照片、前後比較資料</td></tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+<footer>AI 融入議題教育教學實例｜字型設定：Microsoft JhengHei／微軟正黑體</footer>
+<script>
+const categories = [{"id": "social", "title": "社會與人文涵養類", "subtitle": "性別平等、人權、多元文化、家庭教育、生命教育、品德教育", "color": "2F80ED", "light": "EAF3FF", "aim": "讓學生能理解差異、尊重他人、辨識偏見，並在真實情境中練習同理、溝通與負責任的行動。", "ai_roles": ["偏見偵測員", "情境模擬教練", "觀點轉換引導者", "反思回饋夥伴"], "examples": [{"name": "性別平等與人權：媒體訊息偏見偵測任務", "issues": "性別平等、人權、品德教育、閱讀素養", "ai_role": "AI 扮演偏見偵測員與提問教練，協助學生找出用詞、角色設定與資料呈現中的刻板印象。", "functions": "文本摘要、語氣分析、偏見標記、反例生成、修辭改寫。", "practice": ["學生蒐集新聞、廣告或社群貼文。", "使用 AI 分析「誰被看見、誰被忽略、用字是否帶有偏見」。", "學生依 AI 回饋自行修訂訊息，產出更公平的新版文案。"], "output": "偏見分析表、公平溝通改寫稿、班級討論海報。", "assessment": "能指出偏見證據、提出替代表達、說明修正理由。"}, {"name": "多元文化：AI 文化導覽員與跨文化訪談", "issues": "多元文化、國際教育、人權", "ai_role": "AI 扮演文化導覽員、訪談設計師與背景知識補充者。", "functions": "文化背景整理、訪談問題生成、語言轉換、觀點比較、誤解提醒。", "practice": ["學生選擇一個族群、國家或移民故事。", "請 AI 協助設計尊重且不冒犯的訪談問題。", "完成訪談或資料閱讀後，與 AI 對話整理「相同處、差異處、可學習處」。"], "output": "跨文化訪談紀錄、文化理解卡、三分鐘口頭分享。", "assessment": "能避免單一故事，並以具體資料說明文化差異與共通價值。"}, {"name": "生命與家庭教育：AI 角色扮演的同理溝通練習", "issues": "家庭教育、生命教育、品德教育", "ai_role": "AI 扮演家人、同學、導師或輔導員，提供安全的溝通演練場。", "functions": "角色扮演、情緒辨識、對話改寫、非暴力溝通句型建議。", "practice": ["教師設定家庭衝突、生命抉擇或友誼誤會情境。", "學生與 AI 進行對話演練，嘗試使用「我訊息」表達。", "學生回看對話，標記可更同理、更負責任的語句。"], "output": "同理對話腳本、個人反思單、班級溝通守則。", "assessment": "能辨識情緒需求，並用尊重、清楚、不傷害的方式表達。"}]}, {"id": "sustainability", "title": "環境與永續發展類", "subtitle": "環境、海洋、能源、戶外教育、國際教育", "color": "0F766E", "light": "E7F7F4", "aim": "讓學生從資料觀察環境問題，理解地方行動與全球永續目標的連結，並提出可執行的改善方案。", "ai_roles": ["資料整理員", "風險預測助手", "行動方案設計師", "國際比較分析師"], "examples": [{"name": "校園節能：AI 能源偵探與用電改善提案", "issues": "能源、環境、科技、資料素養", "ai_role": "AI 扮演能源偵探，協助學生分析校園用電資料並提出節能策略。", "functions": "資料清理、趨勢摘要、異常偵測、節能建議、提案架構生成。", "practice": ["蒐集教室冷氣、照明、電腦設備的使用紀錄。", "使用 AI 協助整理成表格並找出高耗能時段。", "學生設計節能行動，例如分區開燈、冷氣溫度規範、設備關機提醒。"], "output": "校園節能診斷報告、節能宣導圖卡、班級行動方案。", "assessment": "能以數據支持提案，並提出具可行性與追蹤指標的行動。"}, {"name": "海洋議題：AI 海廢地圖與減塑倡議", "issues": "海洋、環境、國際教育、戶外教育", "ai_role": "AI 扮演海洋資料分析員與倡議文案教練。", "functions": "照片或紀錄分類、資料視覺化建議、倡議文案生成、行動成效追蹤。", "practice": ["學生進行校園或社區周邊垃圾盤點，也可結合淨灘紀錄。", "請 AI 將垃圾類型分類，分析可能來源與改善方向。", "學生製作減塑倡議，推動自備餐具、補水站或回收分類改善。"], "output": "海廢分類圖表、減塑倡議頁、行動前後比較紀錄。", "assessment": "能從觀察資料推論問題來源，並連結個人行為與公共行動。"}, {"name": "戶外教育：AI 生態觀察任務與永續旅行設計", "issues": "戶外教育、環境、國際教育", "ai_role": "AI 扮演戶外學習任務設計師與風險提醒員。", "functions": "觀察任務生成、路線規劃檢核、環境倫理提醒、學習單設計。", "practice": ["教師設定校園、社區步道或濕地作為觀察場域。", "AI 協助產生觀察任務，例如植物、昆蟲、人為干擾與垃圾熱點。", "學生規劃低衝擊參訪路線，提出「不干擾、不帶走、不留下」守則。"], "output": "生態觀察學習單、低衝擊旅行規劃、環境倫理短片腳本。", "assessment": "能提出安全、尊重自然且兼顧學習目標的戶外方案。"}]}, {"id": "science", "title": "科學與生活知能類", "subtitle": "科技、資訊、閱讀素養、安全、防災、法治教育", "color": "B7791F", "light": "FFF7E6", "aim": "讓學生能善用科技解決生活問題，同時具備資訊判讀、安全意識、風險辨識與法治觀念。", "ai_roles": ["資訊查核助理", "安全情境教練", "防災決策模擬器", "法治案例分析員"], "examples": [{"name": "資訊與閱讀素養：AI 假訊息查核工作坊", "issues": "資訊、閱讀素養、法治教育", "ai_role": "AI 扮演查核助理，協助學生拆解主張、找出需驗證的證據與可能的誤導手法。", "functions": "主張抽取、關鍵字建議、來源可信度檢核表、反向提問生成。", "practice": ["學生選擇一則網路流傳訊息。", "AI 協助拆成「主張、證據、情緒語言、缺漏資訊」。", "學生再進行人工查證，最後比較 AI 建議與可信資料來源。"], "output": "查核紀錄表、可信來源清單、假訊息辨識教學海報。", "assessment": "能區分事實、意見與推論，並說明資料來源為何可信或可疑。"}, {"name": "防災與安全：AI 校園災害應變沙盤推演", "issues": "安全、防災、科技", "ai_role": "AI 扮演災害情境生成器與應變流程檢核員。", "functions": "情境模擬、風險清單、避難流程檢核、角色任務分配。", "practice": ["教師設定地震、豪雨、火災或實驗室意外情境。", "學生請 AI 生成不同限制條件，例如停電、通道受阻、有人受傷。", "小組依情境規劃應變流程，並由 AI 協助檢查遺漏風險。"], "output": "校園防災流程圖、角色分工卡、演練後改進報告。", "assessment": "能依情境判斷優先順序，兼顧通報、避難、救護與安全。"}, {"name": "法治與科技：AI 生活案例法律討論室", "issues": "法治教育、科技、資訊、安全", "ai_role": "AI 扮演案例分析員，協助學生理解權利、義務、責任與可能後果。", "functions": "案例摘要、利害關係人分析、問題引導、替代行動建議。", "practice": ["選擇網路霸凌、個資外洩、著作權、交通安全等生活案例。", "AI 協助整理「發生什麼事、誰受影響、有哪些法律或倫理問題」。", "學生提出合法、合宜且保護他人的處理方式。"], "output": "案例分析單、正確處理流程卡、班級數位公民公約。", "assessment": "能辨識行為的法律與倫理責任，並提出具體保護措施。"}]}, {"id": "adaptive", "title": "個人化適性發展類", "subtitle": "生涯規劃、原住民族教育", "color": "6B46C1", "light": "F2ECFF", "aim": "讓學生看見自己的興趣、能力與文化脈絡，透過 AI 輔助探索多元路徑，但保留人的自主判斷與價值選擇。", "ai_roles": ["生涯教練", "能力診斷助手", "文化學習夥伴", "作品集顧問"], "examples": [{"name": "生涯規劃：AI 個人興趣與職涯路徑探索", "issues": "生涯規劃、科技、閱讀素養", "ai_role": "AI 扮演生涯教練，協助學生將興趣、能力、價值觀連結到可能的學習與職涯方向。", "functions": "興趣問卷摘要、職涯路徑比較、能力缺口分析、學習計畫生成。", "practice": ["學生整理自己的興趣、擅長科目、社團經驗與未來期待。", "AI 協助產生 3 至 5 條可能路徑，並列出所需能力。", "學生選一條路徑做人工查證與訪談，再修訂個人學習計畫。"], "output": "個人職涯地圖、能力缺口表、三個月行動計畫。", "assessment": "能以自我資料與外部資訊支持選擇，且不把 AI 建議當成唯一答案。"}, {"name": "原住民族教育：AI 文化故事共讀與地方知識整理", "issues": "原住民族教育、多元文化、閱讀素養", "ai_role": "AI 扮演共讀夥伴與資料整理員，協助學生理解文化脈絡並保持尊重態度。", "functions": "故事摘要、詞彙整理、脈絡提問、尊重性檢核、資料來源整理。", "practice": ["學生閱讀原住民族文學、傳說、地方史或影音資料。", "AI 協助整理角色、事件、地景、祭儀或價值觀，但要求標明來源。", "學生討論哪些知識適合公開分享，哪些需尊重族群規範。"], "output": "文化故事地圖、關鍵詞卡、尊重性分享守則。", "assessment": "能避免獵奇化與刻板化，並理解文化知識有脈絡與界線。"}, {"name": "適性作品集：AI 學習歷程反思與證據整理", "issues": "生涯規劃、品德教育、資訊", "ai_role": "AI 扮演作品集顧問，協助學生把經驗轉化為可說明的能力證據。", "functions": "歷程摘要、能力標籤、反思提問、作品集架構、表達修訂。", "practice": ["學生上傳或整理活動紀錄、報告、服務學習、競賽或專題成果。", "AI 協助萃取能力證據，例如溝通、研究、解決問題、合作。", "學生撰寫反思：我做了什麼、學到什麼、下次如何改進。"], "output": "學習歷程摘要、能力證據矩陣、個人反思短文。", "assessment": "能用具體行為與成果證明能力，而非只寫抽象形容詞。"}]}];
+const roles = [["資料處理", "整理文本、表格、訪談與觀察紀錄，協助學生降低資料雜訊。"], ["診斷分析", "找出偏見、風險、能力缺口、環境問題或閱讀理解盲點。"], ["情境模擬", "產生角色扮演、災害演練、法治案例與溝通練習。"], ["創作生成", "協助產出文案、海報、腳本、流程圖、學習單與提案架構。"], ["回饋修訂", "提供改寫建議、檢核清單、反思提問與下一步行動。"], ["追蹤紀錄", "協助建立指標、比較前後差異、整理學習歷程與行動成效。"]];
+const principles = [["人主導", "AI 提供建議與模擬，但議題判斷、價值取捨與最後決策仍由師生共同完成。"], ["要查證", "凡涉及事實、法律、文化與安全資訊，須回到可靠資料來源交叉檢核。"], ["重隱私", "不輸入學生敏感個資；使用匿名化資料或情境化案例。"], ["有脈絡", "避免把族群、性別、文化或生命經驗簡化成單一標籤。"], ["可行動", "每個實例都要產出可展示、可實作、可評量的學習成果。"]];
+const colorMap = {social:'#2F80ED', sustainability:'#0F766E', science:'#B7791F', adaptive:'#6B46C1'};
+const lightMap = {social:'#EAF3FF', sustainability:'#E7F7F4', science:'#FFF7E6', adaptive:'#F2ECFF'};
+let current = 'all';
+const tabs = document.getElementById('tabs');
+const categoryContainer = document.getElementById('categoryContainer');
+const search = document.getElementById('search');
+const empty = document.getElementById('empty');
+function h(str){return String(str).replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]))}
+function renderTabs(){
+  const labels = [['all','全部實例'], ...categories.map(c=>[c.id,c.title])];
+  tabs.innerHTML = labels.map(([id,label])=>`<button class="tab ${id===current?'active':''}" data-id="${id}">${h(label)}</button>`).join('');
+  tabs.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{current=btn.dataset.id;renderTabs();filterCards();}));
+}
+function renderRoles(){
+  document.getElementById('roleGrid').innerHTML = roles.map(([title,desc],i)=>`<article class="role-card" style="border-top-color:${['#2F80ED','#0F766E','#B7791F','#6B46C1','#2F80ED','#0F766E'][i]}"><h3>${h(title)}</h3><p>${h(desc)}</p></article>`).join('');
+  document.getElementById('principles').innerHTML = principles.map(([title,desc])=>`<div class="principle"><strong>${h(title)}</strong><span>${h(desc)}</span></div>`).join('');
+}
+function renderCategories(){
+  categoryContainer.innerHTML = categories.map((cat, ci)=>{
+    const examples = cat.examples.map((ex, ei)=>`<article class="example-card" data-cat="${cat.id}" data-text="${h([cat.title,cat.subtitle,ex.name,ex.issues,ex.ai_role,ex.functions,ex.output,ex.assessment,ex.practice.join(' ')].join(' ')).toLowerCase()}">
+      <div class="card-top" style="background:${lightMap[cat.id]};border-top:6px solid ${colorMap[cat.id]}"><div class="num">實例 ${ei+1}</div><h3>${h(ex.name)}</h3><div class="badges"><span class="badge">${h(ex.issues)}</span></div></div>
+      <div class="card-body">
+        <div class="meta"><b>AI 角色</b>${h(ex.ai_role)}</div>
+        <div class="meta"><b>主要功能</b>${h(ex.functions)}</div>
+        <details><summary>查看實施流程</summary><ol>${ex.practice.map(s=>`<li>${h(s)}</li>`).join('')}</ol></details>
+        <details><summary>成果與評量</summary><p><b>學習產出：</b>${h(ex.output)}<br/><b>評量觀察：</b>${h(ex.assessment)}</p></details>
+      </div>
+    </article>`).join('');
+    return `<section class="category active" data-cat-section="${cat.id}">
+      <div class="cat-head" style="background:linear-gradient(135deg,${lightMap[cat.id]},#fff);color:${colorMap[cat.id]}">
+        <div><h2>${String(ci+1).padStart(2,'0')}｜${h(cat.title)}</h2><p class="sub">${h(cat.subtitle)}</p><p>${h(cat.aim)}</p><div>${cat.ai_roles.map(r=>`<span class="role-pill">${h(r)}</span>`).join('')}</div></div>
+        <div style="font-size:48px;font-weight:900;opacity:.18">AI</div>
+      </div>
+      <div class="example-grid">${examples}</div>
+    </section>`;
+  }).join('');
+}
+function filterCards(){
+  const q = search.value.trim().toLowerCase();
+  let visible = 0;
+  document.querySelectorAll('.category').forEach(section=>{
+    const cat = section.dataset.catSection;
+    let sectionVisible = false;
+    section.querySelectorAll('.example-card').forEach(card=>{
+      const matchCat = current === 'all' || card.dataset.cat === current;
+      const matchQ = !q || card.dataset.text.includes(q);
+      const show = matchCat && matchQ;
+      card.style.display = show ? '' : 'none';
+      if(show){visible++; sectionVisible = true;}
+    });
+    section.style.display = sectionVisible ? 'block' : 'none';
+  });
+  empty.style.display = visible ? 'none' : 'block';
+}
+function setupChecks(){
+  const checks=[...document.querySelectorAll('input[type="checkbox"]')];
+  checks.forEach((c,i)=>{c.checked=localStorage.getItem('aiTopicCheck'+i)==='1';c.addEventListener('change',()=>localStorage.setItem('aiTopicCheck'+i,c.checked?'1':'0'));})
+}
+function resetChecks(){[...document.querySelectorAll('input[type="checkbox"]')].forEach((c,i)=>{c.checked=false;localStorage.removeItem('aiTopicCheck'+i);})}
+renderTabs();renderRoles();renderCategories();setupChecks();filterCards();search.addEventListener('input',filterCards);
+</script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>跨領域議題 × AI 融入教學實例集</title>
+<style>
+  :root{
+    --navy:#1F3864; --navy-l:#D9E6F2; --navy-d:#16294a;
+    --teal:#1F7A6C; --teal-l:#DCEEEA; --teal-d:#155349;
+    --amber:#B5651D; --amber-l:#FBE7D4; --amber-d:#8a4c13;
+    --purple:#5B3A8E; --purple-l:#E7DFF2; --purple-d:#412968;
+    --ink:#1c1c1c; --paper:#FAF8F4; --paper2:#F1EEE7;
+    --line: rgba(0,0,0,0.08);
+    --font: "微軟正黑體","Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:var(--font); background:var(--paper); color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  /* ===== Header / Hero ===== */
+  .hero{
+    position:relative; overflow:hidden;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--purple) 55%, var(--teal) 100%);
+    color:#fff; padding:64px 24px 56px; text-align:center;
+  }
+  .hero::before{
+    content:""; position:absolute; inset:0; opacity:.12; pointer-events:none;
+    background-image: radial-gradient(circle at 20% 20%, #fff 0, transparent 2px),
+                       radial-gradient(circle at 80% 30%, #fff 0, transparent 2px),
+                       radial-gradient(circle at 50% 80%, #fff 0, transparent 2px),
+                       radial-gradient(circle at 65% 15%, #fff 0, transparent 1.5px),
+                       radial-gradient(circle at 10% 70%, #fff 0, transparent 1.5px);
+    background-size: 340px 340px;
+  }
+  .eyebrow{
+    letter-spacing:.3em; font-size:16px; opacity:.85; margin-bottom:14px;
+  }
+  .hero h1{
+    font-size:clamp(26px,4.6vw,44px); margin:0 0 12px; font-weight:700; line-height:1.35;
+  }
+  .hero p.sub{
+    max-width:640px; margin:0 auto; font-size:19px; opacity:.92; line-height:1.9;
+  }
+  .hero .badges{
+    margin-top:28px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+  }
+  .hero .badges span{
+    border:1px solid rgba(255,255,255,.45); border-radius:999px; padding:6px 16px;
+    font-size:16.5px; background:rgba(255,255,255,.08); backdrop-filter:blur(2px);
+  }
+
+  /* ===== Nav (category tabs) ===== */
+  .navwrap{
+    position:sticky; top:0; z-index:30; background:var(--paper);
+    border-bottom:1px solid var(--line);
+  }
+  .tabs{
+    max-width:1040px; margin:0 auto; display:flex; gap:6px; padding:10px 16px;
+    overflow-x:auto; scrollbar-width:none;
+  }
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{
+    flex:0 0 auto; cursor:pointer; border:none; background:transparent;
+    font-family:var(--font); font-size:17.5px; font-weight:700; color:#777;
+    padding:10px 16px; border-radius:10px; display:flex; align-items:center; gap:8px;
+    transition: all .25s ease; white-space:nowrap;
+  }
+  .tab .dot{width:8px;height:8px;border-radius:50%;background:#ccc; transition:.25s;}
+  .tab.active{ color:#fff; }
+  .tab.active .dot{background:#fff;}
+  .tab:not(.active):hover{ background:var(--paper2); color:#444; }
+  .tab[data-cat="0"].active{background:var(--navy);}
+  .tab[data-cat="1"].active{background:var(--teal);}
+  .tab[data-cat="2"].active{background:var(--amber);}
+  .tab[data-cat="3"].active{background:var(--purple);}
+
+  /* ===== Main layout ===== */
+  main{max-width:1040px; margin:0 auto; padding:36px 20px 80px;}
+  .panel{ display:none; animation: fade .45s ease; }
+  .panel.active{ display:block; }
+  @keyframes fade{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  .panel-head{
+    display:flex; align-items:flex-start; gap:18px; margin-bottom:22px;
+  }
+  .num-badge{
+    flex:0 0 auto; width:56px; height:56px; border-radius:14px; color:#fff;
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:20px;
+    box-shadow:0 6px 16px rgba(0,0,0,.15);
+  }
+  .panel-head h2{margin:0 0 6px; font-size:23px;}
+  .panel-head .sub-line{ font-size:17px; color:#777; }
+
+  .role-card{
+    border-radius:16px; padding:22px 24px; margin-bottom:28px;
+    border-left:6px solid; position:relative; line-height:1.95; font-size:18.5px;
+  }
+  .role-card .role-label{
+    display:inline-block; font-weight:700; font-size:17px; margin-bottom:8px;
+    padding:3px 12px; border-radius:999px; color:#fff;
+  }
+
+  .grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:16px;
+  }
+  @media (max-width: 820px){ .grid{grid-template-columns:1fr;} }
+
+  .card{
+    background:#fff; border-radius:16px; padding:0; overflow:hidden;
+    border:1px solid var(--line); cursor:pointer; position:relative;
+    transition: transform .25s ease, box-shadow .25s ease;
+    display:flex; flex-direction:column;
+  }
+  .card:hover{ transform:translateY(-4px); box-shadow:0 14px 30px rgba(0,0,0,.10); }
+  .card .card-top{
+    padding:16px 18px 10px; display:flex; align-items:center; justify-content:space-between;
+  }
+  .card .idx{
+    font-size:15px; font-weight:700; color:#fff; padding:3px 10px; border-radius:999px;
+  }
+  .card .tag{ font-size:15.5px; color:#888; font-weight:700; }
+  .card h3{ margin:6px 18px 10px; font-size:19.5px; line-height:1.5; }
+  .card .desc{
+    margin:0 18px 18px; font-size:17px; color:#555; line-height:1.85;
+    max-height:0; opacity:0; overflow:hidden; transition: max-height .35s ease, opacity .35s ease, margin .35s ease;
+  }
+  .card.open .desc{ max-height:260px; opacity:1; }
+  .card .toggle-hint{
+    margin:0 18px 16px; font-size:15.5px; color:#aaa; display:flex; align-items:center; gap:5px;
+  }
+  .card .toggle-hint svg{ width:11px; height:11px; transition: transform .3s ease; }
+  .card.open .toggle-hint svg{ transform:rotate(180deg); }
+  .card .accent-bar{ height:4px; width:100%; }
+
+  /* ===== Footer summary strip ===== */
+  .legend{
+    max-width:1040px; margin:8px auto 0; padding:0 20px 40px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
+  }
+  .legend span{ font-size:16px; color:#999; }
+
+  footer{
+    text-align:center; padding:26px 16px 40px; font-size:16px; color:#999;
+    border-top:1px solid var(--line);
+  }
+
+  /* progress dots between categories (signature element) */
+  .flow{
+    display:flex; align-items:center; justify-content:center; gap:8px; margin:34px 0 6px;
+  }
+  .flow .seg{ height:3px; width:42px; border-radius:2px; background:#e6e2da; transition:.3s; }
+  .flow .seg.on{ background: var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="eyebrow">十二年國教課綱・議題融入教學設計</div>
+  <h1>跨領域議題 × AI 融入教學<br>實例對照手冊</h1>
+  <p class="sub">將四大類議題與生成式 AI 的角色及功能相互對照，每一類別提供三項可立即運用於課堂、自主學習或專題探究的實作範例。</p>
+  <div class="badges">
+    <span>社會與人文涵養</span><span>環境與永續發展</span><span>科學與生活知能</span><span>個人化適性發展</span>
+  </div>
+</div>
+
+<div class="navwrap">
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<main id="main"></main>
+
+<footer>跨領域議題 × AI 融入教學實例集　｜　點按卡片可展開詳細說明</footer>
+
+<script>
+const DATA = [
+  {
+    title: "社會與人文涵養類",
+    subTopics: "性別平等．人權．多元文化．家庭教育．生命教育．品德教育",
+    color: "navy", hex:"#1F3864", light:"#D9E6F2", dark:"#16294a",
+    role: "AI 可作為「情境模擬與多元觀點生成器」，協助學生在安全的對話環境中演練同理、辨識偏見並反思價值觀；同時擔任「跨文化翻譯與在地化助手」與「個人化情感支持引導者」，將抽象的人文價值轉化為可互動、可實作的學習經驗。",
+    examples: [
+      { tag:"性別平等 × 人權", title:"AI 性別情境對話練習室", desc:"設計 AI 聊天機器人模擬職場、校園中的性別刻板印象情境，學生與 AI 角色互動，練習辨識偏見語句並產出有禮且堅定的回應話術，課後由 AI 提供反思回饋報告。" },
+      { tag:"生命教育 × 家庭教育", title:"AI 家族口述歷史整理員", desc:"學生訪談長輩後，將錄音逐字稿交由 AI（如 Claude）摘要整理，自動產出時間軸與家族故事電子書，引導學生反思生命傳承與家庭價值，培養同理與感恩。" },
+      { tag:"多元文化 × 品德教育", title:"AI 跨文化情境模擬大使", desc:"運用 AI 即時翻譯與角色扮演功能，讓學生與不同文化背景的虛擬人物對話（如國際移工、新住民家庭），練習跨文化溝通禮儀與品德判斷，最後由 AI 統整文化差異重點筆記。" },
+    ]
+  },
+  {
+    title: "環境與永續發展類",
+    subTopics: "環境．海洋．能源．戶外教育．國際教育",
+    color: "teal", hex:"#1F7A6C", light:"#DCEEEA", dark:"#155349",
+    role: "AI 可作為「資料分析與永續行動建議引擎」，將校園或在地環境數據轉化為可視化報告；亦可作為「影像辨識與戶外探究助手」協助實地觀察分類，並擔任「跨國語言橋樑」促成國際協作，將永續發展目標（SDGs）落實於真實行動方案。",
+    examples: [
+      { tag:"環境 × 能源", title:"AI 校園碳足跡分析顧問", desc:"彙整學校用電、用水與廢棄物數據輸入 AI 工具，由 AI 自動產出碳排放趨勢圖表與節能行動建議書，並對應 SDG 7、SDG 13 目標，作為班級永續行動方案的基礎。" },
+      { tag:"海洋 × 戶外教育", title:"AI 海洋生物與海廢辨識圖鑑", desc:"戶外踏查時使用 AI 影像辨識（拍照辨識物種／海廢類型），學生即時建立觀察紀錄，AI 自動生成圖鑑卡與分布地圖，結合 SDG 14 進行行動倡議發表。" },
+      { tag:"國際教育", title:"AI 跨國永續議題協作平台", desc:"透過 AI 即時翻譯串接國外姊妹校學生，雙方以共同永續議題（如海洋垃圾、再生能源）進行跨國專題協作，AI 協助整合雙語簡報與會議紀錄，培養國際視野與溝通力。" },
+    ]
+  },
+  {
+    title: "科學與生活知能類",
+    subTopics: "科技．資訊．閱讀素養．安全．防災．法治教育",
+    color: "amber", hex:"#B5651D", light:"#FBE7D4", dark:"#8a4c13",
+    role: "AI 可作為「個人化學習診斷與內容轉化工具」，將課本與資料轉換為多元學習素材以提升閱讀素養；亦可化身「情境模擬演練教練」進行防災避難與資安情境訓練，並擔任「資訊判讀與法治推理訓練師」，強化學生媒體識讀與邏輯論證能力。",
+    examples: [
+      { tag:"科技 × 資訊 × 閱讀素養", title:"AI 教材轉譯與自學工具", desc:"使用 NotebookLM 等 AI 工具，將課文或補充教材轉換為 Podcast、心智圖與重點摘要，學生可依自身節奏反覆聆聽複習，提升閱讀理解力與自主學習能力。" },
+      { tag:"安全 × 防災", title:"AI 防災情境模擬演練", desc:"以 AI 生成地震、火災等情境劇本，搭配互動式網頁讓學生在虛擬情境中做出避難決策，AI 即時評估反應是否正確並給予回饋，強化臨場應變能力。" },
+      { tag:"法治教育 × 資訊素養", title:"AI 模擬法庭與假訊息辨識訓練", desc:"AI 依真實案例改編生成模擬法庭劇本，學生分組扮演正反方並由 AI 提供法律論點提示；同時設計 AI 產出的真假新聞辨識練習，訓練學生資訊查證與法治推理能力。" },
+    ]
+  },
+  {
+    title: "個人化適性發展類",
+    subTopics: "生涯規劃．原住民族教育",
+    color: "purple", hex:"#5B3A8E", light:"#E7DFF2", dark:"#412968",
+    role: "AI 可作為「適性化生涯探索對話夥伴」，依學生興趣性向產出個人化建議；亦能擔任「文化傳承數位典藏助手」，協助記錄與保存原住民族語言文化，並結合學習歷程資料，提供兼顧個人發展與文化認同的生涯輔導。",
+    examples: [
+      { tag:"生涯規劃", title:"AI 生涯探索對話機器人", desc:"學生與 AI 進行多輪生涯興趣對話（興趣、能力、價值觀探索），AI 依回答產出個人化生涯地圖與對應的 18 週自主學習計畫，連結大學科系與職涯路徑資訊。" },
+      { tag:"原住民族教育", title:"AI 部落口述歷史與族語數位典藏", desc:"協助學生訪談部落耆老，將族語口述歷史錄音轉譯、翻譯並整理為文字與雙語對照文本，建置成數位典藏網站，達成文化傳承與資訊科技應用的雙重學習目標。" },
+      { tag:"生涯規劃 × 原住民族教育", title:"AI 文化認同生涯媒合報告", desc:"AI 分析學生學習歷程檔案與文化背景，媒合原住民族相關科系、職人典範與獎助資源，產出兼顧個人志向與族群文化認同的客製化生涯建議報告。" },
+    ]
+  },
+];
+
+const tabsEl = document.getElementById('tabs');
+const mainEl = document.getElementById('main');
+
+DATA.forEach((cat, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'tab' + (i===0 ? ' active' : '');
+  btn.dataset.cat = i;
+  btn.innerHTML = `<span class="dot"></span>${String(i+1).padStart(2,'0')}　${cat.title}`;
+  btn.addEventListener('click', () => switchTab(i));
+  tabsEl.appendChild(btn);
+
+  const panel = document.createElement('section');
+  panel.className = 'panel' + (i===0 ? ' active' : '');
+  panel.id = 'panel-' + i;
+
+  panel.innerHTML = `
+    <div class="panel-head">
+      <div class="num-badge" style="background:${cat.hex}">${String(i+1).padStart(2,'0')}</div>
+      <div>
+        <h2>${cat.title}</h2>
+        <div class="sub-line">${cat.subTopics}</div>
+      </div>
+    </div>
+    <div class="role-card" style="background:${cat.light}; border-left-color:${cat.hex};">
+      <span class="role-label" style="background:${cat.hex}">AI 角色與功能定位</span>
+      <div>${cat.role}</div>
+    </div>
+    <div class="grid"></div>
+    <div class="flow">${DATA.map((_,k)=>`<div class="seg ${k===i?'on':''}"></div>`).join('')}</div>
+  `;
+
+  const grid = panel.querySelector('.grid');
+  cat.examples.forEach((ex, j) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="accent-bar" style="background:${cat.hex}"></div>
+      <div class="card-top">
+        <span class="idx" style="background:${cat.hex}">實例 ${j+1}</span>
+        <span class="tag">${ex.tag}</span>
+      </div>
+      <h3>${ex.title}</h3>
+      <div class="desc">${ex.desc}</div>
+      <div class="toggle-hint">
+        點按展開說明
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+    `;
+    card.addEventListener('click', () => card.classList.toggle('open'));
+    grid.appendChild(card);
+  });
+
+  mainEl.appendChild(panel);
+});
+
+function switchTab(i){
+  document.querySelectorAll('.tab').forEach((t,k)=> t.classList.toggle('active', k===i));
+  document.querySelectorAll('.panel').forEach((p,k)=> p.classList.toggle('active', k===i));
+}
+</script>
+</body>
+</html>

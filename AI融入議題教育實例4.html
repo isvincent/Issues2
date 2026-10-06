@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>校訂課程議題 × AI 教育應用實例</title>
+<style>
+  :root{
+    --soc:#2E7D6B; --soc-l:#e7f3f0;
+    --env:#1F6FB2; --env-l:#e8f1fa;
+    --sci:#8A4FBF; --sci-l:#f2eaf9;
+    --per:#C9742B; --per-l:#fbeee0;
+    --ink:#1b1b1b; --sub:#5a5a5a; --bg:#f6f5f2; --card:#ffffff;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:"Microsoft JhengHei","微軟正黑體",-apple-system,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.7;
+  }
+  header{
+    padding:56px 24px 40px; text-align:center;
+    background:radial-gradient(circle at 20% 20%, #2E7D6B22, transparent 50%),
+               radial-gradient(circle at 80% 10%, #1F6FB222, transparent 50%),
+               radial-gradient(circle at 50% 90%, #8A4FBF22, transparent 50%), #fff;
+    border-bottom:1px solid #e8e6e0;
+  }
+  header h1{font-size:clamp(24px,4vw,38px); margin:0 0 10px; letter-spacing:1px;}
+  header p{color:var(--sub); margin:0; font-size:19px;}
+  .badge-row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:22px;}
+  .badge{
+    padding:8px 16px; border-radius:999px; font-size:17px; font-weight:bold; cursor:pointer;
+    border:2px solid transparent; transition:all .2s; user-select:none; background:#eee; color:#444;
+  }
+  .badge.active{color:#fff;}
+  .badge[data-c="soc"].active{background:var(--soc); border-color:var(--soc);}
+  .badge[data-c="env"].active{background:var(--env); border-color:var(--env);}
+  .badge[data-c="sci"].active{background:var(--sci); border-color:var(--sci);}
+  .badge[data-c="per"].active{background:var(--per); border-color:var(--per);}
+  .badge:not(.active):hover{background:#e2e2e2;}
+
+  main{max-width:1040px; margin:0 auto; padding:36px 20px 80px;}
+  .category{margin-bottom:48px; opacity:0; transform:translateY(14px); animation:rise .55s ease forwards;}
+  .category:nth-of-type(1){animation-delay:.05s;}
+  .category:nth-of-type(2){animation-delay:.15s;}
+  .category:nth-of-type(3){animation-delay:.25s;}
+  .category:nth-of-type(4){animation-delay:.35s;}
+  @keyframes rise{to{opacity:1; transform:translateY(0);}}
+
+  .cat-head{
+    display:flex; align-items:center; gap:14px; padding:18px 22px; border-radius:14px;
+    color:#fff; margin-bottom:18px; cursor:pointer;
+  }
+  .cat-head .num{
+    width:38px; height:38px; flex:0 0 38px; border-radius:50%; background:rgba(255,255,255,.25);
+    display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:17px;
+  }
+  .cat-head h2{margin:0; font-size:19px;}
+  .cat-head .sub{font-size:16.5px; opacity:.92; margin-top:4px;}
+  .cat-head .chev{margin-left:auto; font-size:16px; transition:transform .3s;}
+  .category.collapsed .chev{transform:rotate(-90deg);}
+  .cat[data-c="soc"] .cat-head{background:linear-gradient(120deg,var(--soc),#3f9d87);}
+  .cat[data-c="env"] .cat-head{background:linear-gradient(120deg,var(--env),#3f8fd4);}
+  .cat[data-c="sci"] .cat-head{background:linear-gradient(120deg,var(--sci),#a875d9);}
+  .cat[data-c="per"] .cat-head{background:linear-gradient(120deg,var(--per),#e0954f);}
+
+  .cards{display:grid; grid-template-columns:repeat(auto-fit, minmax(290px,1fr)); gap:16px;
+    max-height:2000px; overflow:hidden; transition:max-height .4s ease, opacity .3s ease;}
+  .category.collapsed .cards{max-height:0; opacity:0;}
+
+  .card{
+    background:var(--card); border-radius:14px; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,.05);
+    border-top:5px solid #ccc; cursor:pointer; transition:transform .25s, box-shadow .25s;
+  }
+  .card:hover{transform:translateY(-4px); box-shadow:0 10px 22px rgba(0,0,0,.10);}
+  .cat[data-c="soc"] .card{border-top-color:var(--soc);}
+  .cat[data-c="env"] .card{border-top-color:var(--env);}
+  .cat[data-c="sci"] .card{border-top-color:var(--sci);}
+  .cat[data-c="per"] .card{border-top-color:var(--per);}
+
+  .card .idx{font-size:16px; font-weight:bold; color:var(--sub); letter-spacing:1px;}
+  .card h3{font-size:16.5px; margin:6px 0 12px; line-height:1.5;}
+  .card .role{
+    display:inline-block; font-size:16.5px; font-weight:bold; padding:4px 10px; border-radius:8px; margin-bottom:10px;
+  }
+  .cat[data-c="soc"] .role{background:var(--soc-l); color:var(--soc);}
+  .cat[data-c="env"] .role{background:var(--env-l); color:var(--env);}
+  .cat[data-c="sci"] .role{background:var(--sci-l); color:var(--sci);}
+  .cat[data-c="per"] .role{background:var(--per-l); color:var(--per);}
+  .card p{font-size:17.5px; color:#444; margin:0; max-height:0; overflow:hidden; transition:max-height .35s ease, margin .35s ease;}
+  .card.open p{max-height:260px; margin-top:6px;}
+  .card .toggle-hint{font-size:15.5px; color:#999; margin-top:8px;}
+
+  footer{text-align:center; padding:30px; color:#999; font-size:16.5px;}
+
+  @media (max-width:520px){
+    .cat-head{padding:14px 16px;}
+    .cat-head h2{font-size:16.5px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>校訂課程議題 × AI 教育應用實例</h1>
+  <p>四大議題類別・十二項可實際運用的 AI 角色與功能範例（點擊分類標題收合／展開，點擊卡片查看完整說明）</p>
+  <div class="badge-row" id="filterRow"></div>
+</header>
+
+<main id="main"></main>
+
+<footer>點擊每張卡片可展開／收合詳細應用說明，亦可點擊分類色塊標題進行整類收合。</footer>
+
+<script>
+const DATA = [
+  {
+    key:"soc", title:"一、社會與人文涵養類", sub:"性別平等｜人權｜多元文化｜家庭教育｜生命教育｜品德教育",
+    items:[
+      {name:"AI 性別平等情境模擬與角色扮演對話", role:"AI 扮演對話夥伴與情境設計師",
+       desc:"教師輸入職場、校園或家庭中的性別偏見情境，AI 即時生成多角色對話腳本，學生輪流扮演當事人與旁觀者，練習辨識偏見語言並提出合宜回應；AI 同步給予溝通技巧回饋，將性別平等與品德教育的「同理表達」結合。"},
+      {name:"AI 多元文化故事生成與跨文化交流平台", role:"AI 擔任跨文化故事創作者與虛擬筆友",
+       desc:"學生輸入自身或所欲了解的文化背景關鍵字，AI 生成融合多元文化元素的短篇故事或虛擬筆友對話，引導學生比較異同、反思刻板印象，並可結合人權教育單元討論文化平等與尊重。"},
+      {name:"AI 生命教育情緒日記與親子溝通陪伴系統", role:"AI 擔任情緒分析師與反思引導者",
+       desc:"學生以文字記錄每日情緒與事件，AI 分析語句中的情緒詞彙，提供溫和的反思提問與品德教育情境建議；系統亦可產出親子溝通卡，協助學生將反思內容轉化為與家人對話的開場，銜接家庭教育目標。"}
+    ]
+  },
+  {
+    key:"env", title:"二、環境與永續發展類", sub:"環境｜海洋｜能源｜戶外教育｜國際教育",
+    items:[
+      {name:"AI 海洋廢棄物影像辨識公民科學專案", role:"AI 擔任影像辨識與資料分析助手",
+       desc:"學生於淨灘活動中拍攝海廢照片，AI 自動辨識垃圾類型並統計數量，產出可視化圖表；資料可上傳至國際公民科學資料庫，與他國學校交流比較，連結海洋教育與國際教育。"},
+      {name:"AI 校園能源足跡模擬與節能決策系統", role:"AI 擔任能源情境模擬器與顧問",
+       desc:"學生輸入班級或校園用電數據，AI 模擬不同節能方案（如更換照明、調整空調設定）對碳排放與電費的影響，提出具體建議，協助學生以數據驅動方式參與能源教育與永續行動。"},
+      {name:"AI 戶外教育生態觀察與物種辨識助手", role:"AI 擔任生態導覽員與物種辨識引擎",
+       desc:"學生於戶外教育行程中拍攝動植物照片，AI 即時辨識物種並生成生態解說卡（含棲地、保育等級），並依地點推薦延伸觀察路線，強化戶外教育的探究與紀錄能力。"}
+    ]
+  },
+  {
+    key:"sci", title:"三、科學與生活知能類", sub:"科技｜資訊｜閱讀素養｜安全｜防災｜法治教育",
+    items:[
+      {name:"AI 防災情境模擬與避難決策訓練", role:"AI 擔任災害情境劇本生成器與決策評估員",
+       desc:"AI 依校園或社區地理特性生成地震、颱風、火災等情境劇本，學生於互動對話中做出避難決策，AI 即時評估選擇合理性並說明防災知識，提升防災教育的實境演練成效。"},
+      {name:"AI 適性化分級閱讀文本與提問生成系統", role:"AI 擔任分級文本編輯與提問設計師",
+       desc:"依學生閱讀能力與興趣，AI 自動調整文本難度並生成理解、推論、思辨三層次提問，搭配即時回饋，協助教師落實差異化教學，提升閱讀素養。"},
+      {name:"AI 資安與法治情境判斷練習平台", role:"AI 擔任情境模擬與法治知識顧問",
+       desc:"AI 模擬網路詐騙、個資外洩、智慧財產權侵權等情境對話，學生練習辨識風險並選擇因應做法，AI 即時說明相關法律規範，結合資訊科技與法治教育目標。"}
+    ]
+  },
+  {
+    key:"per", title:"四、個人化適性發展類", sub:"生涯規劃｜原住民族教育",
+    items:[
+      {name:"AI 生涯性向分析與職業探索對話系統", role:"AI 擔任生涯諮詢對話夥伴",
+       desc:"學生完成興趣量表後與 AI 進行多輪對話，AI 整合性向測驗結果與對話內容，產出個人化的生涯試探建議與學群／職業地圖，並提供延伸職涯人物訪談問題，協助學生規劃學習路徑。"},
+      {name:"AI 原住民族語言學習與文化傳承助手", role:"AI 擔任族語學習教練與文化故事庫",
+       desc:"AI 提供族語詞彙與例句練習，並針對學生口說發音給予回饋；同時連結部落文化故事與口述歷史，協助學生在學習語言之餘認識文化脈絡，支持原住民族教育的傳承與認同。"},
+      {name:"AI 學習歷程智慧分析與生涯地圖產出系統", role:"AI 擔任學習歷程分析師",
+       desc:"AI 彙整學生課程成果、自主學習計畫與社團經驗，分析興趣與能力發展趨勢，自動產出視覺化生涯地圖與下一階段學習建議，協助學生與導師進行生涯輔導對話。"}
+    ]
+  }
+];
+
+const main = document.getElementById('main');
+const filterRow = document.getElementById('filterRow');
+
+DATA.forEach(cat=>{
+  const b = document.createElement('div');
+  b.className='badge active'; b.dataset.c=cat.key; b.textContent=cat.title.replace(/^[一二三四]、/,'');
+  filterRow.appendChild(b);
+
+  const sec = document.createElement('div');
+  sec.className='category cat'; sec.dataset.c=cat.key;
+
+  sec.innerHTML = `
+    <div class="cat-head" data-toggle>
+      <div class="num">${cat.key==='soc'?1:cat.key==='env'?2:cat.key==='sci'?3:4}</div>
+      <div>
+        <h2>${cat.title}</h2>
+        <div class="sub">${cat.sub}</div>
+      </div>
+      <div class="chev">▾</div>
+    </div>
+    <div class="cards">
+      ${cat.items.map((it,i)=>`
+        <div class="card" data-toggle-card>
+          <div class="idx">實例 0${i+1}</div>
+          <h3>${it.name}</h3>
+          <div class="role">${it.role}</div>
+          <p>${it.desc}</p>
+          <div class="toggle-hint">點擊查看完整說明 ▾</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  main.appendChild(sec);
+});
+
+main.addEventListener('click', e=>{
+  const head = e.target.closest('[data-toggle]');
+  if(head){
+    head.closest('.category').classList.toggle('collapsed');
+    return;
+  }
+  const card = e.target.closest('[data-toggle-card]');
+  if(card){ card.classList.toggle('open'); }
+});
+
+filterRow.addEventListener('click', e=>{
+  const b = e.target.closest('.badge');
+  if(!b) return;
+  b.classList.toggle('active');
+  const key = b.dataset.c;
+  const sec = document.querySelector(`.category[data-c="${key}"]`);
+  sec.style.display = b.classList.contains('active') ? '' : 'none';
+});
+</script>
+</body>
+</html>

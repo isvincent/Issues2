@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 融入四類議題教育應用設計</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --panel: rgba(255,255,255,.86);
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --primary: #1e3a5f;
+      --blue: #2563eb;
+      --shadow: 0 22px 55px rgba(15, 23, 42, .12);
+      --radius: 24px;
+      --font: "Microsoft JhengHei", "微軟正黑體", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(37,99,235,.13), transparent 36%),
+        radial-gradient(circle at 88% 0%, rgba(124,58,237,.16), transparent 32%),
+        linear-gradient(180deg, #f8fafc 0%, #eef2ff 58%, #f8fafc 100%);
+      min-height: 100vh;
+    }
+    .wrap { width: min(1180px, calc(100% - 36px)); margin: 0 auto; }
+    .hero { padding: 48px 0 28px; }
+    .hero-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 34px;
+      padding: 46px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 54%, #2563eb 100%);
+      color: white;
+      box-shadow: var(--shadow);
+    }
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: -160px auto auto -130px;
+      width: 360px;
+      height: 360px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+    }
+    .hero-card::after {
+      content: "AI";
+      position: absolute;
+      right: 28px;
+      bottom: -42px;
+      font-size:180px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -10px;
+      color: rgba(255,255,255,.08);
+    }
+    .eyebrow { display: inline-flex; gap: 8px; align-items: center; padding: 8px 13px; border: 1px solid rgba(255,255,255,.28); border-radius: 999px; background: rgba(255,255,255,.1); font-size:18px; }
+    h1 { position: relative; margin: 22px 0 14px; max-width: 860px; font-size: clamp(34px, 5vw, 62px); line-height: 1.08; letter-spacing: -1.2px; }
+    .hero p { position: relative; margin: 0; max-width: 820px; color: #dbeafe; font-size:18px; line-height: 1.75; }
+    .hero-actions { position: relative; display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font: 700 15px var(--font);
+      cursor: pointer;
+      color: var(--ink);
+      background: white;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, .14);
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+      text-decoration: none;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(15, 23, 42, .18); }
+    .btn.secondary { color: white; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.28); }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 18px; }
+    .stat { padding: 20px; border-radius: 24px; background: var(--panel); border: 1px solid rgba(255,255,255,.7); box-shadow: 0 12px 30px rgba(15,23,42,.08); backdrop-filter: blur(14px); }
+    .stat strong { display: block; font-size:32px; color: var(--blue); }
+    .stat span { color: var(--muted); font-weight: 700; }
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 12px 0;
+      background: rgba(248,250,252,.78);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(226,232,240,.72);
+    }
+    .toolgrid { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }
+    .search { position: relative; }
+    .search input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 15px 20px 15px 46px;
+      font: 600 15px var(--font);
+      background: white;
+      outline: none;
+      box-shadow: 0 8px 18px rgba(15,23,42,.05);
+    }
+    .search span { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      border: 1px solid var(--line);
+      background: white;
+      color: #334155;
+      border-radius: 999px;
+      padding: 11px 14px;
+      font: 700 14px var(--font);
+      cursor: pointer;
+      transition: all .18s ease;
+    }
+    .chip.active, .chip:hover { background: var(--primary); color: white; border-color: var(--primary); }
+    section { padding: 24px 0; }
+    .section-title { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin: 16px 0; }
+    .section-title h2 { margin: 0; font-size: clamp(25px, 3vw, 38px); letter-spacing: -.5px; }
+    .section-title p { margin: 6px 0 0; color: var(--muted); line-height: 1.6; }
+    .overview { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .cat-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 250px;
+      border-radius: var(--radius);
+      padding: 22px;
+      background: white;
+      border: 1px solid var(--line);
+      box-shadow: 0 14px 35px rgba(15,23,42,.07);
+    }
+    .cat-card::after { content:""; position: absolute; right: -60px; top: -60px; width: 150px; height: 150px; border-radius: 999px; background: var(--accent-soft); }
+    .cat-card .num { color: var(--accent); font-weight: 900; font-size:18px; }
+    .cat-card h3 { margin: 10px 0 8px; font-size:20px; }
+    .cat-card p { color: var(--muted); line-height: 1.62; margin: 0 0 14px; }
+    .tag-row { display: flex; gap: 7px; flex-wrap: wrap; }
+    .tag { display: inline-flex; padding: 6px 9px; border-radius: 999px; font-size:16px; font-weight: 800; color: var(--accent); background: var(--accent-soft); }
+    .main-grid { display: grid; grid-template-columns: 280px 1fr; gap: 18px; align-items: start; }
+    .side { position: sticky; top: 86px; display: grid; gap: 14px; }
+    .panel { background: var(--panel); border: 1px solid rgba(226,232,240,.8); border-radius: var(--radius); padding: 20px; box-shadow: 0 14px 35px rgba(15,23,42,.07); backdrop-filter: blur(16px); }
+    .panel h3 { margin: 0 0 12px; }
+    .bar-row { display: grid; grid-template-columns: 92px 1fr 24px; gap: 8px; align-items: center; margin: 10px 0; font-size:17px; font-weight: 800; color: #334155; }
+    .bar { height: 10px; border-radius: 999px; background: #e2e8f0; overflow: hidden; }
+    .bar > i { display:block; height:100%; width: var(--w); border-radius:999px; background: linear-gradient(90deg,#2563eb,#7c3aed); }
+    .cases { display: grid; gap: 16px; }
+    .case {
+      border-radius: 26px;
+      overflow: hidden;
+      background: white;
+      border: 1px solid var(--line);
+      box-shadow: 0 16px 38px rgba(15,23,42,.08);
+    }
+    .case-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: start;
+      padding: 22px;
+      cursor: pointer;
+    }
+    .case h3 { margin: 0 0 8px; font-size:22px; }
+    .case .meta { color: var(--muted); line-height: 1.55; }
+    .pill { display: inline-flex; margin: 3px 4px 3px 0; padding: 6px 10px; border-radius: 999px; font-size:16px; font-weight: 900; background: var(--soft); color: var(--accent); }
+    .toggle { width: 42px; height: 42px; border-radius: 999px; border: 1px solid var(--line); background: #f8fafc; font-size:20px; cursor: pointer; }
+    .case-body { display: none; padding: 0 22px 22px; }
+    .case.open .case-body { display: block; animation: reveal .18s ease; }
+    @keyframes reveal { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: none; } }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .detail { border-radius: 20px; padding: 16px; background: #f8fafc; border: 1px solid var(--line); }
+    .detail h4 { margin: 0 0 8px; color: var(--accent); }
+    .detail p, .detail li { color: #334155; line-height: 1.72; }
+    .detail ul { padding-left: 1.2em; margin: 8px 0 0; }
+    .wide { grid-column: 1 / -1; }
+    .flow { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; counter-reset: step; }
+    .step { position: relative; padding: 18px 16px; border-radius: 22px; background: white; border: 1px solid var(--line); box-shadow: 0 10px 25px rgba(15,23,42,.06); }
+    .step::before { counter-increment: step; content: counter(step); display:inline-grid; place-items:center; width:30px; height:30px; border-radius:50%; background:#1e3a5f; color:white; font-weight:900; margin-bottom:10px; }
+    .step h3 { margin: 0 0 8px; font-size:16px; }
+    .step p { margin: 0; color: var(--muted); line-height: 1.55; font-size:18px; }
+    .principles { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    .principle { padding: 18px; border-radius: 22px; background: #fff; border: 1px solid var(--line); box-shadow: 0 10px 24px rgba(15,23,42,.06); }
+    .principle b { display:block; margin-bottom: 8px; color: var(--primary); }
+    .principle span { color: var(--muted); line-height: 1.58; font-size:18px; }
+    .empty { text-align:center; padding: 44px; color: var(--muted); background:white; border-radius: var(--radius); border:1px dashed #cbd5e1; }
+    footer { padding: 40px 0 56px; color: var(--muted); text-align: center; }
+    @media (max-width: 980px) {
+      .stats, .overview { grid-template-columns: repeat(2, 1fr); }
+      .main-grid { grid-template-columns: 1fr; }
+      .side { position: static; }
+      .flow, .principles { grid-template-columns: repeat(2, 1fr); }
+      .toolgrid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .hero-card { padding: 28px; }
+      .stats, .overview, .detail-grid, .flow, .principles { grid-template-columns: 1fr; }
+      .case-head { grid-template-columns: 1fr; }
+    }
+    @media print {
+      .toolbar, .hero-actions, .toggle { display:none !important; }
+      body { background:white; }
+      .hero-card, .panel, .case, .cat-card, .step, .principle { box-shadow:none; break-inside: avoid; }
+      .case-body { display:block !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="hero-card">
+        <div class="eyebrow">人機協作導向｜議題教育應用設計</div>
+        <h1>AI 融入四類議題教育的 12 個實際應用實例</h1>
+        <p>把 AI 定位為對話教練、資料分析師、情境模擬器、閱讀查核助理與個人化回饋者，協助學生從理解議題、蒐集資料、判斷觀點到提出可行行動。</p>
+        <div class="hero-actions">
+          <a class="btn" href="#cases">瀏覽 12 個案例</a>
+          <a class="btn secondary" href="#roadmap">查看導入流程</a>
+          <button class="btn secondary" onclick="window.print()">列印／轉存 PDF</button>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><strong>4</strong><span>四大議題類別</span></div>
+        <div class="stat"><strong>18+</strong><span>涵蓋教育議題</span></div>
+        <div class="stat"><strong>12</strong><span>實際應用案例</span></div>
+        <div class="stat"><strong>6</strong><span>AI 導入步驟</span></div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="toolbar">
+    <div class="wrap toolgrid">
+      <div class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="搜尋：例如 性別平等、能源、防災、學習歷程、原住民族教育..." /></div>
+      <div class="chips" id="chips"></div>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <section id="overview">
+      <div class="section-title">
+        <div>
+          <h2>四類議題總覽</h2>
+          <p>每一類皆對應特定 AI 功能與教學任務，可依課程時間、學生年級與學校情境調整。</p>
+        </div>
+      </div>
+      <div class="overview" id="overviewCards"></div>
+    </section>
+
+    <section id="cases">
+      <div class="section-title">
+        <div>
+          <h2>實際應用案例</h2>
+          <p>點選卡片可展開「教學情境、AI 角色、實施流程、評量提醒」。</p>
+        </div>
+      </div>
+      <div class="main-grid">
+        <aside class="side">
+          <div class="panel">
+            <h3>AI 功能分布</h3>
+            <div id="bars"></div>
+          </div>
+          <div class="panel">
+            <h3>使用原則</h3>
+            <p style="color:var(--muted);line-height:1.65;margin:0;">建議採用「學生先思考 → AI 輔助 → 學生再判斷」流程，並要求標示資料來源與 AI 使用方式。</p>
+          </div>
+        </aside>
+        <div class="cases" id="caseList"></div>
+      </div>
+    </section>
+
+    <section id="roadmap">
+      <div class="section-title">
+        <div>
+          <h2>AI 融入課程的 6 步驟</h2>
+          <p>從學習目標開始，而不是從工具開始；讓 AI 支持探究、協作、評量與行動。</p>
+        </div>
+      </div>
+      <div class="flow" id="roadmapList"></div>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <div>
+          <h2>評量與風險控管原則</h2>
+          <p>AI 產出必須經過人工判斷，尤其是法律、防災、心理、族群文化與政策資料。</p>
+        </div>
+      </div>
+      <div class="principles" id="principles"></div>
+    </section>
+  </main>
+  <footer>字型設定：微軟正黑體｜單一 HTML 檔案，可離線開啟、搜尋、篩選與列印。</footer>
+
+  <script>
+    const categories = [{"id": "humanity", "order": "01", "title": "社會與人文涵養類", "subtitle": "性別平等、人權、多元文化、家庭教育、生命教育、品德教育", "color": "7C3AED", "light": "F5F3FF", "focus": ["同理理解", "偏見辨識", "價值澄清", "多元表達", "情境討論"], "ai_roles": ["對話教練：以角色扮演協助學生練習尊重、同理與溝通。", "偏見檢核器：分析教材、案例與學生文字中可能出現的刻板印象或歧視語句。", "情境設計師：生成貼近校園與家庭生活的倫理困境、討論題與反思單。"], "cases": [{"title": "校園性別平等情境對話工作坊", "issues": ["性別平等", "人權", "品德教育"], "role": "AI 扮演多方角色與回饋教練，提供情境對話、語氣修正、尊重用語建議與反思問題。", "scenario": "學生在班會或綜合活動課中，針對「玩笑是否造成性別刻板印象」、「社團分工是否公平」等情境進行對話練習。", "workflow": ["教師輸入校園常見情境，AI 生成 3 種角色觀點。", "學生分組與 AI 角色互動，練習提出感受、事實與需求。", "AI 即時標註可能的刻板印象、攻擊性語句與更佳替代表達。", "全班整理尊重溝通準則，形成班級共識。"], "outputs": ["性別平等對話腳本", "尊重語句替換表", "班級溝通公約"], "assessment": "以「能否辨識刻板印象、能否提出具體尊重做法、能否傾聽不同立場」作為評量規準。", "caution": "AI 產出的情境須由教師先審閱，避免強化刻板印象或使用不當案例。"}, {"title": "多元文化家庭故事地圖", "issues": ["多元文化", "家庭教育", "人權"], "role": "AI 協助訪談題目設計、語言轉譯、故事摘要與文化背景補充。", "scenario": "學生訪問家人或社區成員，整理飲食、節慶、遷徙、職業與家庭價值觀，理解文化差異與共同需求。", "workflow": ["AI 產生不冒犯、可選答的家庭訪談題庫。", "學生蒐集口述資料後，AI 協助整理成故事段落。", "AI 將故事中的文化元素標記為「習俗、語言、價值、生活經驗」。", "學生製作文化故事地圖並分享尊重多元文化的行動。"], "outputs": ["家庭訪談提綱", "文化故事地圖", "多元文化展示海報"], "assessment": "觀察學生是否能區分事實與刻板印象，並以尊重、好奇、非標籤化的方式描述他人文化。", "caution": "須尊重隱私，不要求揭露家庭敏感資訊；上傳資料前應去識別化。"}, {"title": "生命與品德議題 AI 反思教練", "issues": ["生命教育", "品德教育", "家庭教育"], "role": "AI 提供價值澄清問題、情緒辨識提示、行動方案建議與反思回饋。", "scenario": "針對「同學被排擠時我該怎麼做」、「家人衝突如何溝通」、「面對挫折如何求助」等生活情境進行反思。", "workflow": ["教師建立安全情境案例，AI 產生不同選擇的可能後果。", "學生先個別書寫判斷理由，再向 AI 詢問盲點。", "AI 以蘇格拉底式提問引導學生補充感受、責任與可行行動。", "學生完成個人反思單與具體行動承諾。"], "outputs": ["生命教育案例卡", "價值澄清反思單", "求助資源清單"], "assessment": "重視思辨歷程，不以單一標準答案評分；可採自評、同儕回饋與教師回饋並行。", "caution": "涉及心理危機、家庭暴力或自傷風險時，AI 不能取代輔導與通報機制。"}]}, {"id": "sustainability", "order": "02", "title": "環境與永續發展類", "subtitle": "環境、海洋、能源、戶外教育、國際教育", "color": "15803D", "light": "ECFDF3", "focus": ["資料分析", "永續行動", "風險判讀", "戶外觀察", "國際連結"], "ai_roles": ["資料分析師：協助整理校園能源、垃圾、用水與環境觀察資料。", "情境模擬器：模擬減碳、節能、海洋污染與生態保育的不同策略結果。", "戶外學習助理：協助規劃觀察任務、辨識物種、整理紀錄與生成學習報告。"], "cases": [{"title": "校園碳盤查與節能決策儀表板", "issues": ["環境", "能源", "國際教育"], "role": "AI 協助資料清理、趨勢分析、節能建議生成與簡報視覺化。", "scenario": "學生蒐集班級用電、冷氣使用、燈具數量、交通方式與校園用水資料，建立校園永續改善方案。", "workflow": ["學生以表單蒐集能源與生活行為資料。", "AI 協助找出高耗能時段與可能原因。", "AI 模擬調整冷氣溫度、關燈、步行上學等策略的可能影響。", "學生向行政單位提出可執行的節能提案。"], "outputs": ["校園能源資料表", "節能改善提案", "碳盤查簡報"], "assessment": "評量資料可信度、分析邏輯、方案可行性與行動後追蹤。", "caution": "AI 推估須標示假設條件，不應把估算結果當作精準碳排數據。"}, {"title": "海洋塑膠污染公民科學調查", "issues": ["海洋", "環境", "戶外教育"], "role": "AI 協助分類垃圾照片、生成觀察紀錄、分析來源與提出減塑行動。", "scenario": "學生在溪流、海邊或校園周邊進行垃圾與微塑膠議題調查，連結日常消費與海洋污染。", "workflow": ["學生以手機拍照與記錄地點、類型、數量。", "AI 協助將垃圾類型分類為餐飲包材、生活用品、漁業廢棄物等。", "AI 生成污染來源假設與可驗證問題。", "學生設計校園減塑倡議與社區宣導。"], "outputs": ["環境調查紀錄表", "污染熱點地圖", "減塑倡議文宣"], "assessment": "以觀察紀錄完整度、分類一致性、行動倡議的可行度作為重點。", "caution": "戶外調查須先完成安全規劃；照片辨識結果需人工複核。"}, {"title": "國際永續議題比較與跨校交流", "issues": ["國際教育", "環境", "能源"], "role": "AI 扮演多語摘要、資料比較、問題設計與交流草稿協助者。", "scenario": "學生比較不同國家在淨零、再生能源、海洋保護或氣候調適上的做法，與海外學伴討論。", "workflow": ["AI 協助將英文或其他語言資料摘要成學生可讀版本。", "學生建立國家比較表，整理政策、生活行動與困難。", "AI 生成跨文化提問，協助學生準備交流。", "交流後由 AI 協助整理共同倡議與差異觀察。"], "outputs": ["國際永續比較表", "跨校交流問題清單", "雙語倡議簡報"], "assessment": "評量學生是否能引用資料、理解脈絡差異、避免以單一文化標準評價他國。", "caution": "國際資料須確認來源與日期；AI 翻譯需保留原文比對。"}]}, {"id": "science_life", "order": "03", "title": "科學與生活知能類", "subtitle": "科技、資訊、閱讀素養、安全、防災、法治教育", "color": "2563EB", "light": "EAF3FF", "focus": ["資訊判讀", "科技實作", "閱讀理解", "安全決策", "法治素養"], "ai_roles": ["資訊查核助理：協助學生辨識來源、交叉驗證、找出可疑論點。", "學習鷹架：將複雜文本改寫為不同難度，並生成提問與摘要。", "安全模擬器：針對防災、網路安全、法治情境進行決策演練。"], "cases": [{"title": "AI 資訊查核與閱讀素養任務", "issues": ["資訊", "閱讀素養", "科技"], "role": "AI 協助摘要、關鍵字萃取、論點拆解、來源比對與查核流程設計。", "scenario": "學生面對社群貼文、新聞標題、廣告或科普文章，學習判斷資訊可信度與論證品質。", "workflow": ["學生選取一則網路資訊，先自行標示主張、證據與情緒語句。", "AI 協助拆解論點並提出需要查證的關鍵問題。", "學生使用可信來源交叉驗證，AI 協助整理查核表。", "學生產出「可信、部分可信、不可信」的判斷與理由。"], "outputs": ["資訊查核流程單", "閱讀理解提問卡", "來源可信度比較表"], "assessment": "評量是否能區分事實、推論、意見與情緒操作，而非只看答案是否正確。", "caution": "AI 本身可能產生錯誤摘要或不存在的來源，必須要求學生提供可追溯來源。"}, {"title": "防災避難決策模擬器", "issues": ["防災", "安全", "資訊"], "role": "AI 生成災害情境、即時提問、風險因子提醒與決策後果回饋。", "scenario": "以地震、颱風、豪雨、火災或校園實驗室安全為情境，讓學生練習判斷、應變與求助。", "workflow": ["教師設定地點、災害類型與學生年級。", "AI 生成分階段情境，例如警報、停電、通訊中斷、受傷同學。", "學生分組選擇應變方案並說明依據。", "AI 回饋風險、遺漏步驟與更好的安全流程。"], "outputs": ["防災情境卡", "避難流程圖", "班級安全 SOP"], "assessment": "觀察學生是否能依據資訊更新調整決策，並能說出安全優先順序。", "caution": "正式防災流程須以學校、地方政府與消防單位規範為準。"}, {"title": "法治與網路安全生活案例助理", "issues": ["法治教育", "安全", "資訊"], "role": "AI 協助將法律概念轉成生活案例，分析行為後果，生成角色討論問題。", "scenario": "討論網路霸凌、個資保護、著作權、詐騙辨識、未成年網路消費等學生常見問題。", "workflow": ["教師提供學生生活案例，AI 轉成情境劇本。", "學生辨識案例中涉及的權利、責任與風險。", "AI 協助整理「可以做、應避免、需要求助」清單。", "學生完成自我保護與尊重他人權益的行動指南。"], "outputs": ["網路安全情境劇本", "法治概念對照表", "學生自保清單"], "assessment": "評量學生能否把法律與安全概念轉化為日常行動，而非背誦條文。", "caution": "AI 不能提供正式法律意見；法律內容須以主管機關與學校規定為準。"}]}, {"id": "personalized", "order": "04", "title": "個人化適性發展類", "subtitle": "生涯規劃、原住民族教育", "color": "C2410C", "light": "FFF7ED", "focus": ["適性診斷", "學習歷程", "文化尊重", "生涯探索", "個人回饋"], "ai_roles": ["生涯顧問：協助學生盤點興趣、能力、價值觀與升學職涯路徑。", "學習歷程整理員：協助將活動、作品與反思整理成可呈現的學習檔案。", "文化共學助理：在尊重族群主體性的前提下，協助資料整理、多語呈現與故事創作。"], "cases": [{"title": "AI 生涯探索與學習路徑建議", "issues": ["生涯規劃"], "role": "AI 整合興趣量表、學習紀錄與學生訪談，生成個人化探索問題與行動建議。", "scenario": "學生不只查詢職業名稱，而是從興趣、能力、價值觀、學科連結與生活型態出發，建立可試探的生涯假設。", "workflow": ["學生填寫興趣、擅長科目、喜歡的活動與不喜歡的工作條件。", "AI 產生 3 到 5 個可能方向與需要驗證的問題。", "學生選擇一個方向進行職業訪談或資料搜尋。", "AI 協助整理下一步：課程選擇、社團活動、競賽或作品集主題。"], "outputs": ["個人生涯探索報告", "職業訪談問題", "三個月行動計畫"], "assessment": "評量學生是否能提出可驗證的生涯假設，並以行動修正自己的選擇。", "caution": "AI 建議不能把學生定型；應強調多元可能與可調整路徑。"}, {"title": "學習歷程檔案 AI 作品整理員", "issues": ["生涯規劃"], "role": "AI 協助學生從活動紀錄中萃取能力證據，改寫反思，對應未來目標。", "scenario": "學生將專題、服務學習、閱讀、社團、競賽或幹部經驗整理成有脈絡的學習歷程，而非只羅列活動。", "workflow": ["學生上傳或貼上活動紀錄與作品摘要。", "AI 協助找出能力證據，例如溝通、研究、資料分析、領導、創作。", "AI 引導學生補充困難、修正過程與收穫。", "學生產出符合自身語氣的學習歷程反思。"], "outputs": ["能力證據表", "學習歷程反思稿", "作品集架構"], "assessment": "重點在真實性、具體證據與反思深度，不鼓勵套版美化。", "caution": "學生應保留原始經驗與個人聲音，避免由 AI 代寫成不真實內容。"}, {"title": "原住民族文化共學與地方知識故事庫", "issues": ["原住民族教育", "多元文化"], "role": "AI 協助整理文本、建立雙語詞彙、生成訪談問題與學習展示草稿。", "scenario": "學生透過地方踏查、耆老訪談、文獻閱讀或社區合作，理解族群歷史、語言、地名、工藝、祭儀與生態智慧。", "workflow": ["教師與社區共同決定可公開、可學習的主題邊界。", "AI 協助把訪談紀錄整理成段落與關鍵詞。", "學生查證資料來源，區分公開知識與不宜公開內容。", "AI 協助製作尊重文化脈絡的故事卡、展板或導覽稿。"], "outputs": ["地方知識故事卡", "族語與華語詞彙表", "文化共學展覽稿"], "assessment": "評量學生是否尊重文化主體、能說明資料來源，並避免把文化簡化成奇觀。", "caution": "原住民族知識涉及文化權利與社群同意，AI 不可替代族人詮釋與授權。"}]}];
+    const cases = [{"title": "校園性別平等情境對話工作坊", "issues": ["性別平等", "人權", "品德教育"], "role": "AI 扮演多方角色與回饋教練，提供情境對話、語氣修正、尊重用語建議與反思問題。", "scenario": "學生在班會或綜合活動課中，針對「玩笑是否造成性別刻板印象」、「社團分工是否公平」等情境進行對話練習。", "workflow": ["教師輸入校園常見情境，AI 生成 3 種角色觀點。", "學生分組與 AI 角色互動，練習提出感受、事實與需求。", "AI 即時標註可能的刻板印象、攻擊性語句與更佳替代表達。", "全班整理尊重溝通準則，形成班級共識。"], "outputs": ["性別平等對話腳本", "尊重語句替換表", "班級溝通公約"], "assessment": "以「能否辨識刻板印象、能否提出具體尊重做法、能否傾聽不同立場」作為評量規準。", "caution": "AI 產出的情境須由教師先審閱，避免強化刻板印象或使用不當案例。", "categoryId": "humanity", "categoryTitle": "社會與人文涵養類", "categoryColor": "#7C3AED", "index": 1}, {"title": "多元文化家庭故事地圖", "issues": ["多元文化", "家庭教育", "人權"], "role": "AI 協助訪談題目設計、語言轉譯、故事摘要與文化背景補充。", "scenario": "學生訪問家人或社區成員，整理飲食、節慶、遷徙、職業與家庭價值觀，理解文化差異與共同需求。", "workflow": ["AI 產生不冒犯、可選答的家庭訪談題庫。", "學生蒐集口述資料後，AI 協助整理成故事段落。", "AI 將故事中的文化元素標記為「習俗、語言、價值、生活經驗」。", "學生製作文化故事地圖並分享尊重多元文化的行動。"], "outputs": ["家庭訪談提綱", "文化故事地圖", "多元文化展示海報"], "assessment": "觀察學生是否能區分事實與刻板印象，並以尊重、好奇、非標籤化的方式描述他人文化。", "caution": "須尊重隱私，不要求揭露家庭敏感資訊；上傳資料前應去識別化。", "categoryId": "humanity", "categoryTitle": "社會與人文涵養類", "categoryColor": "#7C3AED", "index": 2}, {"title": "生命與品德議題 AI 反思教練", "issues": ["生命教育", "品德教育", "家庭教育"], "role": "AI 提供價值澄清問題、情緒辨識提示、行動方案建議與反思回饋。", "scenario": "針對「同學被排擠時我該怎麼做」、「家人衝突如何溝通」、「面對挫折如何求助」等生活情境進行反思。", "workflow": ["教師建立安全情境案例，AI 產生不同選擇的可能後果。", "學生先個別書寫判斷理由，再向 AI 詢問盲點。", "AI 以蘇格拉底式提問引導學生補充感受、責任與可行行動。", "學生完成個人反思單與具體行動承諾。"], "outputs": ["生命教育案例卡", "價值澄清反思單", "求助資源清單"], "assessment": "重視思辨歷程，不以單一標準答案評分；可採自評、同儕回饋與教師回饋並行。", "caution": "涉及心理危機、家庭暴力或自傷風險時，AI 不能取代輔導與通報機制。", "categoryId": "humanity", "categoryTitle": "社會與人文涵養類", "categoryColor": "#7C3AED", "index": 3}, {"title": "校園碳盤查與節能決策儀表板", "issues": ["環境", "能源", "國際教育"], "role": "AI 協助資料清理、趨勢分析、節能建議生成與簡報視覺化。", "scenario": "學生蒐集班級用電、冷氣使用、燈具數量、交通方式與校園用水資料，建立校園永續改善方案。", "workflow": ["學生以表單蒐集能源與生活行為資料。", "AI 協助找出高耗能時段與可能原因。", "AI 模擬調整冷氣溫度、關燈、步行上學等策略的可能影響。", "學生向行政單位提出可執行的節能提案。"], "outputs": ["校園能源資料表", "節能改善提案", "碳盤查簡報"], "assessment": "評量資料可信度、分析邏輯、方案可行性與行動後追蹤。", "caution": "AI 推估須標示假設條件，不應把估算結果當作精準碳排數據。", "categoryId": "sustainability", "categoryTitle": "環境與永續發展類", "categoryColor": "#15803D", "index": 1}, {"title": "海洋塑膠污染公民科學調查", "issues": ["海洋", "環境", "戶外教育"], "role": "AI 協助分類垃圾照片、生成觀察紀錄、分析來源與提出減塑行動。", "scenario": "學生在溪流、海邊或校園周邊進行垃圾與微塑膠議題調查，連結日常消費與海洋污染。", "workflow": ["學生以手機拍照與記錄地點、類型、數量。", "AI 協助將垃圾類型分類為餐飲包材、生活用品、漁業廢棄物等。", "AI 生成污染來源假設與可驗證問題。", "學生設計校園減塑倡議與社區宣導。"], "outputs": ["環境調查紀錄表", "污染熱點地圖", "減塑倡議文宣"], "assessment": "以觀察紀錄完整度、分類一致性、行動倡議的可行度作為重點。", "caution": "戶外調查須先完成安全規劃；照片辨識結果需人工複核。", "categoryId": "sustainability", "categoryTitle": "環境與永續發展類", "categoryColor": "#15803D", "index": 2}, {"title": "國際永續議題比較與跨校交流", "issues": ["國際教育", "環境", "能源"], "role": "AI 扮演多語摘要、資料比較、問題設計與交流草稿協助者。", "scenario": "學生比較不同國家在淨零、再生能源、海洋保護或氣候調適上的做法，與海外學伴討論。", "workflow": ["AI 協助將英文或其他語言資料摘要成學生可讀版本。", "學生建立國家比較表，整理政策、生活行動與困難。", "AI 生成跨文化提問，協助學生準備交流。", "交流後由 AI 協助整理共同倡議與差異觀察。"], "outputs": ["國際永續比較表", "跨校交流問題清單", "雙語倡議簡報"], "assessment": "評量學生是否能引用資料、理解脈絡差異、避免以單一文化標準評價他國。", "caution": "國際資料須確認來源與日期；AI 翻譯需保留原文比對。", "categoryId": "sustainability", "categoryTitle": "環境與永續發展類", "categoryColor": "#15803D", "index": 3}, {"title": "AI 資訊查核與閱讀素養任務", "issues": ["資訊", "閱讀素養", "科技"], "role": "AI 協助摘要、關鍵字萃取、論點拆解、來源比對與查核流程設計。", "scenario": "學生面對社群貼文、新聞標題、廣告或科普文章，學習判斷資訊可信度與論證品質。", "workflow": ["學生選取一則網路資訊，先自行標示主張、證據與情緒語句。", "AI 協助拆解論點並提出需要查證的關鍵問題。", "學生使用可信來源交叉驗證，AI 協助整理查核表。", "學生產出「可信、部分可信、不可信」的判斷與理由。"], "outputs": ["資訊查核流程單", "閱讀理解提問卡", "來源可信度比較表"], "assessment": "評量是否能區分事實、推論、意見與情緒操作，而非只看答案是否正確。", "caution": "AI 本身可能產生錯誤摘要或不存在的來源，必須要求學生提供可追溯來源。", "categoryId": "science_life", "categoryTitle": "科學與生活知能類", "categoryColor": "#2563EB", "index": 1}, {"title": "防災避難決策模擬器", "issues": ["防災", "安全", "資訊"], "role": "AI 生成災害情境、即時提問、風險因子提醒與決策後果回饋。", "scenario": "以地震、颱風、豪雨、火災或校園實驗室安全為情境，讓學生練習判斷、應變與求助。", "workflow": ["教師設定地點、災害類型與學生年級。", "AI 生成分階段情境，例如警報、停電、通訊中斷、受傷同學。", "學生分組選擇應變方案並說明依據。", "AI 回饋風險、遺漏步驟與更好的安全流程。"], "outputs": ["防災情境卡", "避難流程圖", "班級安全 SOP"], "assessment": "觀察學生是否能依據資訊更新調整決策，並能說出安全優先順序。", "caution": "正式防災流程須以學校、地方政府與消防單位規範為準。", "categoryId": "science_life", "categoryTitle": "科學與生活知能類", "categoryColor": "#2563EB", "index": 2}, {"title": "法治與網路安全生活案例助理", "issues": ["法治教育", "安全", "資訊"], "role": "AI 協助將法律概念轉成生活案例，分析行為後果，生成角色討論問題。", "scenario": "討論網路霸凌、個資保護、著作權、詐騙辨識、未成年網路消費等學生常見問題。", "workflow": ["教師提供學生生活案例，AI 轉成情境劇本。", "學生辨識案例中涉及的權利、責任與風險。", "AI 協助整理「可以做、應避免、需要求助」清單。", "學生完成自我保護與尊重他人權益的行動指南。"], "outputs": ["網路安全情境劇本", "法治概念對照表", "學生自保清單"], "assessment": "評量學生能否把法律與安全概念轉化為日常行動，而非背誦條文。", "caution": "AI 不能提供正式法律意見；法律內容須以主管機關與學校規定為準。", "categoryId": "science_life", "categoryTitle": "科學與生活知能類", "categoryColor": "#2563EB", "index": 3}, {"title": "AI 生涯探索與學習路徑建議", "issues": ["生涯規劃"], "role": "AI 整合興趣量表、學習紀錄與學生訪談，生成個人化探索問題與行動建議。", "scenario": "學生不只查詢職業名稱，而是從興趣、能力、價值觀、學科連結與生活型態出發，建立可試探的生涯假設。", "workflow": ["學生填寫興趣、擅長科目、喜歡的活動與不喜歡的工作條件。", "AI 產生 3 到 5 個可能方向與需要驗證的問題。", "學生選擇一個方向進行職業訪談或資料搜尋。", "AI 協助整理下一步：課程選擇、社團活動、競賽或作品集主題。"], "outputs": ["個人生涯探索報告", "職業訪談問題", "三個月行動計畫"], "assessment": "評量學生是否能提出可驗證的生涯假設，並以行動修正自己的選擇。", "caution": "AI 建議不能把學生定型；應強調多元可能與可調整路徑。", "categoryId": "personalized", "categoryTitle": "個人化適性發展類", "categoryColor": "#C2410C", "index": 1}, {"title": "學習歷程檔案 AI 作品整理員", "issues": ["生涯規劃"], "role": "AI 協助學生從活動紀錄中萃取能力證據，改寫反思，對應未來目標。", "scenario": "學生將專題、服務學習、閱讀、社團、競賽或幹部經驗整理成有脈絡的學習歷程，而非只羅列活動。", "workflow": ["學生上傳或貼上活動紀錄與作品摘要。", "AI 協助找出能力證據，例如溝通、研究、資料分析、領導、創作。", "AI 引導學生補充困難、修正過程與收穫。", "學生產出符合自身語氣的學習歷程反思。"], "outputs": ["能力證據表", "學習歷程反思稿", "作品集架構"], "assessment": "重點在真實性、具體證據與反思深度，不鼓勵套版美化。", "caution": "學生應保留原始經驗與個人聲音，避免由 AI 代寫成不真實內容。", "categoryId": "personalized", "categoryTitle": "個人化適性發展類", "categoryColor": "#C2410C", "index": 2}, {"title": "原住民族文化共學與地方知識故事庫", "issues": ["原住民族教育", "多元文化"], "role": "AI 協助整理文本、建立雙語詞彙、生成訪談問題與學習展示草稿。", "scenario": "學生透過地方踏查、耆老訪談、文獻閱讀或社區合作，理解族群歷史、語言、地名、工藝、祭儀與生態智慧。", "workflow": ["教師與社區共同決定可公開、可學習的主題邊界。", "AI 協助把訪談紀錄整理成段落與關鍵詞。", "學生查證資料來源，區分公開知識與不宜公開內容。", "AI 協助製作尊重文化脈絡的故事卡、展板或導覽稿。"], "outputs": ["地方知識故事卡", "族語與華語詞彙表", "文化共學展覽稿"], "assessment": "評量學生是否尊重文化主體、能說明資料來源，並避免把文化簡化成奇觀。", "caution": "原住民族知識涉及文化權利與社群同意，AI 不可替代族人詮釋與授權。", "categoryId": "personalized", "categoryTitle": "個人化適性發展類", "categoryColor": "#C2410C", "index": 3}];
+    const stats = {"對話與回饋": 4, "資料整理與摘要": 7, "情境模擬": 5, "診斷與推薦": 3, "視覺化與生成": 6, "風險提醒": 4};
+    const roadmap = [["1. 選定議題與學習目標", "先界定核心素養、年級、課程時數與學生需要解決的真實問題。"], ["2. 設計 AI 角色", "決定 AI 是扮演對話者、分析師、教練、評量者、模擬器或作品助理。"], ["3. 建立資料與規範", "準備可信來源、校內規範、使用邊界、隱私保護與禁止代寫規則。"], ["4. 人機協作實作", "採「學生先思考，AI 再輔助，學生再修正」流程，避免直接複製答案。"], ["5. 產出與評量", "以任務成果、反思歷程、資料來源、可行行動與倫理意識作為評量重點。"], ["6. 回饋與優化", "蒐集學生困難、AI 錯誤與課程成效，持續修正提示詞、資料與活動設計。"]];
+    const principles = [["人本優先", "AI 是輔助工具，教育目標仍以學生理解、判斷、同理與行動為核心。"], ["資料可追溯", "要求學生標示資料來源、AI 使用方式與人工修正內容。"], ["倫理與隱私", "涉及個資、家庭、心理、族群文化與法律議題時，必須設定清楚界線。"], ["多元表達", "允許學生用文字、圖表、簡報、口說、地圖或作品呈現學習成果。"], ["教師把關", "教師負責審查 AI 生成內容、維持安全討論環境與提供專業判斷。"]];
+    let activeCategory = 'all';
+    let keyword = '';
+
+    const $ = (sel) => document.querySelector(sel);
+    const escapeHtml = (str) => String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
+
+    function renderChips() {
+      const chips = $('#chips');
+      chips.innerHTML = `<button class="chip ${activeCategory === 'all' ? 'active' : ''}" data-id="all">全部</button>` +
+        categories.map(c => `<button class="chip ${activeCategory === c.id ? 'active' : ''}" data-id="${c.id}">${escapeHtml(c.title.replace('類',''))}</button>`).join('');
+      chips.querySelectorAll('.chip').forEach(btn => btn.addEventListener('click', () => {
+        activeCategory = btn.dataset.id;
+        renderChips();
+        renderCases();
+      }));
+    }
+
+    function renderOverview() {
+      $('#overviewCards').innerHTML = categories.map(c => `
+        <article class="cat-card" style="--accent:${c.categoryColor || '#' + c.color};--accent-soft:#${c.light};">
+          <div class="num">${escapeHtml(c.order)}</div>
+          <h3>${escapeHtml(c.title)}</h3>
+          <p>${escapeHtml(c.subtitle)}</p>
+          <div class="tag-row">${c.focus.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>
+        </article>`).join('');
+    }
+
+    function caseMatches(c) {
+      const haystack = [c.title, c.categoryTitle, c.role, c.scenario, c.assessment, c.caution, ...(c.issues||[]), ...(c.outputs||[]), ...(c.workflow||[])].join(' ');
+      return (activeCategory === 'all' || c.categoryId === activeCategory) && (!keyword || haystack.toLowerCase().includes(keyword.toLowerCase()));
+    }
+
+    function renderCases() {
+      const list = $('#caseList');
+      const filtered = cases.filter(caseMatches);
+      if (!filtered.length) {
+        list.innerHTML = `<div class="empty">找不到符合條件的案例，請更換關鍵字或分類。</div>`;
+        return;
+      }
+      list.innerHTML = filtered.map((c, idx) => `
+        <article class="case ${idx === 0 ? 'open' : ''}" style="--accent:${c.categoryColor};--soft:${softColor(c.categoryId)};">
+          <div class="case-head" role="button" tabindex="0" onclick="toggleCase(this)" onkeypress="if(event.key==='Enter') toggleCase(this)">
+            <div>
+              <div>${c.issues.map(i => `<span class="pill">${escapeHtml(i)}</span>`).join('')}</div>
+              <h3>${escapeHtml(c.title)}</h3>
+              <div class="meta">${escapeHtml(c.categoryTitle)}｜${escapeHtml(c.scenario)}</div>
+            </div>
+            <button class="toggle" aria-label="展開或收合">＋</button>
+          </div>
+          <div class="case-body">
+            <div class="detail-grid">
+              <div class="detail"><h4>AI 角色與功能</h4><p>${escapeHtml(c.role)}</p></div>
+              <div class="detail"><h4>教學情境</h4><p>${escapeHtml(c.scenario)}</p></div>
+              <div class="detail wide"><h4>實施流程</h4><ul>${c.workflow.map(w => `<li>${escapeHtml(w)}</li>`).join('')}</ul></div>
+              <div class="detail"><h4>可產出成果</h4><p>${c.outputs.map(o => `<span class="pill">${escapeHtml(o)}</span>`).join('')}</p></div>
+              <div class="detail"><h4>評量與注意事項</h4><p><b>評量重點：</b>${escapeHtml(c.assessment)}</p><p><b>提醒：</b>${escapeHtml(c.caution)}</p></div>
+            </div>
+          </div>
+        </article>`).join('');
+    }
+
+    function softColor(id) {
+      const c = categories.find(x => x.id === id);
+      return c ? '#' + c.light : '#f1f5f9';
+    }
+
+    function toggleCase(head) {
+      const card = head.closest('.case');
+      card.classList.toggle('open');
+      const btn = card.querySelector('.toggle');
+      btn.textContent = card.classList.contains('open') ? '−' : '＋';
+    }
+
+    function renderBars() {
+      const max = Math.max(...Object.values(stats));
+      $('#bars').innerHTML = Object.entries(stats).map(([k,v]) => `
+        <div class="bar-row"><span>${escapeHtml(k)}</span><div class="bar"><i style="--w:${Math.round(v/max*100)}%"></i></div><b>${v}</b></div>`).join('');
+    }
+
+    function renderRoadmap() {
+      $('#roadmapList').innerHTML = roadmap.map(([title, desc]) => `<div class="step"><h3>${escapeHtml(title)}</h3><p>${escapeHtml(desc)}</p></div>`).join('');
+    }
+
+    function renderPrinciples() {
+      $('#principles').innerHTML = principles.map(([title, desc]) => `<div class="principle"><b>${escapeHtml(title)}</b><span>${escapeHtml(desc)}</span></div>`).join('');
+    }
+
+    $('#searchInput').addEventListener('input', (e) => { keyword = e.target.value.trim(); renderCases(); });
+    renderChips(); renderOverview(); renderBars(); renderCases(); renderRoadmap(); renderPrinciples();
+  </script>
+</body>
+</html>
